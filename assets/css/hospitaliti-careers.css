@@ -1,0 +1,969 @@
+/**
+ * Hospitaliti Jobs – Careers / Company Widget Styles
+ *
+ * Covers:
+ *   • "Work For Us" section (jobs-list.php)
+ *   • Job card (job-card.php)
+ *   • Organisation filter pills
+ *   • Job detail page (job-detail.php)
+ *   • Application form
+ *
+ * Colors are driven by CSS custom properties injected inline from settings.
+ * Default values below act as fallbacks if the inline style is absent.
+ *
+ * --hc-primary   Brand primary color     (default #016a6d)
+ * --hc-accent    Text on primary         (default #ffffff)
+ * --hc-bg        Section background      (default #111111)
+ */
+
+/* =============================================================================
+   CSS custom property defaults (overridden by inline style from settings)
+   ============================================================================= */
+
+/* Brand colour defaults — overridden at runtime by wp_add_inline_style()
+   which targets :root so values are available to every element on the page. */
+:root {
+	--hc-primary: #016a6d;
+	--hc-accent:  #ffffff;
+	--hc-bg:      #111111;
+}
+
+/* =============================================================================
+   "Work For Us" section
+   ============================================================================= */
+
+.hospitaliti-careers-section {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* ── Section header ──────────────────────────────────────────────────────────── */
+
+.hospitaliti-careers-header {
+	background: var(--hc-bg, #111111);
+	padding: 32px 24px;
+	margin-bottom: 0;
+}
+
+.hospitaliti-careers-title {
+	margin: 0;
+	font-size: clamp(22px, 4vw, 34px);
+	font-weight: 700;
+	color: var(--hc-accent, #ffffff);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	line-height: 1.15;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Organisation filter pills ───────────────────────────────────────────────── */
+
+.hospitaliti-org-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 20px 24px;
+	border-bottom: 1px solid #f0f0f0;
+	background: #fafafa;
+}
+
+.hospitaliti-org-pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 16px;
+	border: 1.5px solid var(--hc-primary);
+	border-radius: 100px;
+	background: transparent;
+	color: var(--hc-primary);
+	font-size: 13px;
+	font-weight: 500;
+	font-family: inherit;
+	line-height: 1.4;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hospitaliti-org-pill:hover {
+	background: color-mix(in srgb, var(--hc-primary) 8%, transparent);
+}
+
+.hospitaliti-org-pill.is-active,
+.hospitaliti-org-pill[aria-pressed="true"] {
+	background: var(--hc-primary);
+	color: var(--hc-accent);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.hospitaliti-org-pill:focus-visible {
+	outline: 2px solid var(--hc-primary);
+	outline-offset: 2px;
+}
+
+/* ── Company job cards ───────────────────────────────────────────────────────── */
+
+.hospitaliti-company-jobs-list {
+	padding: 0 24px;
+}
+
+.hospitaliti-company-job-card {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 18px 0;
+	border-bottom: 1px solid #f0f0f0;
+	transition: background 0.12s ease;
+}
+
+.hospitaliti-company-job-card:last-child {
+	border-bottom: none;
+}
+
+.hospitaliti-company-job-card.is-hidden {
+	display: none;
+}
+
+/* Org tag */
+.hospitaliti-company-org-tag {
+	flex-shrink: 0;
+	min-width: 160px;
+	max-width: 220px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--hc-primary);
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	line-height: 1.3;
+}
+
+/* Job title link */
+.hospitaliti-company-job-title {
+	flex: 1;
+	min-width: 0;
+	font-size: 15px;
+	font-weight: 600;
+	color: #111827;
+	text-decoration: none;
+	line-height: 1.4;
+	transition: color 0.15s ease;
+}
+
+.hospitaliti-company-job-title:hover {
+	color: var(--hc-primary);
+}
+
+/* Employment type badge (right-aligned, optional) */
+.hospitaliti-company-job-type {
+	flex-shrink: 0;
+	font-size: 11px;
+	font-weight: 500;
+	color: #6b7280;
+	padding: 3px 10px;
+	border: 1px solid #e5e7eb;
+	border-radius: 100px;
+	white-space: nowrap;
+}
+
+/* Narrow screens — stack org tag above title */
+@media (max-width: 600px) {
+	.hospitaliti-company-job-card {
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+	.hospitaliti-company-org-tag {
+		min-width: 0;
+		max-width: 100%;
+		width: 100%;
+	}
+	.hospitaliti-company-job-type {
+		display: none;
+	}
+}
+
+/* =============================================================================
+   Job detail page
+   ============================================================================= */
+
+.hospitaliti-job-detail {
+	width: 100%;
+}
+
+/* ── Page sections ───────────────────────────────────────────────────────────── */
+
+/* Section 1 — Job information.
+   Transparent so the theme's own page background shows through. */
+.hospitaliti-detail-section-info {
+	background: transparent;
+}
+
+/* Section 2 — Apply form.
+   Derives its background from the Primary Color setting (6 % tint + white),
+   so it always creates a harmonious, on-brand separation from Section 1.
+   The top border is also tinted with primary for a cohesive look. */
+.hospitaliti-detail-section-apply {
+	background: color-mix(in srgb, var(--hc-primary) 6%, #ffffff);
+	border-top: 2px solid color-mix(in srgb, var(--hc-primary) 20%, #e5e7eb);
+}
+
+/* ── Full-width breakout ─────────────────────────────────────────────────────
+   Astra (and most themes) wrap page content in a max-width container.
+   This breakout pulls both sections edge-to-edge regardless of the theme's
+   container width, using the standard negative-margin / 100vw technique.   */
+.hospitaliti-detail-section-info,
+.hospitaliti-detail-section-apply {
+	width: 100vw;
+	position: relative;
+	left: 50%;
+	right: 50%;
+	margin-left: -50vw;
+	margin-right: -50vw;
+	box-sizing: border-box;
+}
+
+/* ── Banner ──────────────────────────────────────────────────────────────────── */
+
+.hospitaliti-detail-banner {
+	position: relative;
+	height: 260px;
+	background: var(--hc-bg);
+	background-size: cover;
+	background-position: center;
+	display: flex;
+	align-items: flex-end;
+	/* Break out of the theme container to go full-width. */
+	width: 100vw;
+	left: 50%;
+	margin-left: -50vw;
+	box-sizing: border-box;
+}
+
+.hospitaliti-detail-banner-overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.65) 100%);
+}
+
+.hospitaliti-detail-banner-inner {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 24px 32px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.hospitaliti-detail-banner-logo {
+	flex-shrink: 0;
+	width: 72px;
+	height: 72px;
+	border-radius: 50%;
+	overflow: hidden;
+	background: #ffffff;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+	border: 3px solid rgba(255,255,255,0.85);
+}
+
+.hospitaliti-detail-banner-logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.hospitaliti-detail-banner-org {
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--hc-accent, #ffffff);
+	letter-spacing: 0.02em;
+	text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 600px) {
+	.hospitaliti-detail-banner { height: 200px; }
+	.hospitaliti-detail-banner-inner { padding: 16px 20px; }
+	.hospitaliti-detail-banner-logo { width: 56px; height: 56px; }
+}
+
+/* ── Container ───────────────────────────────────────────────────────────────── */
+
+.hospitaliti-detail-container {
+	max-width: 820px;
+	margin: 0 auto;
+	padding: 32px 24px 64px;
+	box-sizing: border-box;
+}
+
+/* ── Breadcrumb ──────────────────────────────────────────────────────────────── */
+
+.hospitaliti-detail-breadcrumb {
+	margin-bottom: 28px;
+}
+
+.hospitaliti-detail-breadcrumb a {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--hc-primary);
+	text-decoration: none;
+	transition: opacity 0.15s ease;
+}
+
+.hospitaliti-detail-breadcrumb a:hover {
+	color: color-mix(in srgb, var(--hc-primary) 75%, #000);
+	text-decoration: none !important; 
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────────── */
+
+.hospitaliti-detail-org {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--hc-primary);
+	margin-bottom: 10px;
+	padding: 5px 14px 5px 10px;
+	border: 1px solid var(--hc-primary);
+	border-radius: 20px;
+}
+
+.hospitaliti-detail-org::before {
+	content: '';
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: #7a8c5a;
+	opacity: 0.6;
+	flex-shrink: 0;
+}
+
+.hospitaliti-detail-title {
+	font-size: clamp(22px, 4vw, 32px);
+	font-weight: 700;
+	color: var(--hc-primary, #111827); /* respects Job Detail Page → Primary Color setting */
+	line-height: 1.2;
+	margin: 0 0 20px;
+}
+
+/* ── Meta badges ─────────────────────────────────────────────────────────────── */
+
+.hospitaliti-detail-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 36px;
+	padding-bottom: 28px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.hospitaliti-detail-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--hc-accent, #ffffff);
+	background: var(--hc-primary, #016a6d);
+	padding: 5px 12px;
+	border-radius: 100px;
+	line-height: 1.4;
+	transition: opacity 0.15s ease;
+}
+
+.hospitaliti-detail-badge:hover {
+	opacity: 0.85;
+}
+
+.hospitaliti-detail-badge svg {
+	flex-shrink: 0;
+	color: var(--hc-accent, #ffffff);
+}
+
+/* ── Content ─────────────────────────────────────────────────────────────────── */
+
+.hospitaliti-detail-content {
+	font-size: 15px;
+	line-height: 1.7;
+	color: var(--hc-primary, #374151) !important;
+}
+
+.hospitaliti-detail-description {
+	margin-bottom: 32px;
+}
+
+.hospitaliti-detail-description h2,
+.hospitaliti-detail-description h3 {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111827;
+	margin: 28px 0 10px;
+}
+
+.hospitaliti-detail-description ul,
+.hospitaliti-detail-description ol,
+.hospitaliti-detail-list {
+	padding-left: 20px;
+	margin: 10px 0;
+}
+
+.hospitaliti-detail-description li,
+.hospitaliti-detail-list li {
+	margin-bottom: 6px;
+}
+
+.hospitaliti-detail-section {
+	margin-bottom: 28px;
+}
+
+.hospitaliti-detail-section-title {
+	font-size: 17px;
+	font-weight: 700;
+	color: #111827;
+	margin: 0 0 12px;
+	padding-bottom: 8px;
+	border-bottom: 2px solid var(--hc-primary);
+	display: inline-block;
+}
+
+/* ── Skill tags ──────────────────────────────────────────────────────────────── */
+
+.hospitaliti-skill-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 8px;
+}
+
+.hospitaliti-skill-tag {
+	font-size: 12px;
+	font-weight: 500;
+	background: var(--hc-primary);
+	color: var(--hc-accent, #ffffff);
+	border: 1.5px solid var(--hc-primary);
+	border-radius: 100px;
+	padding: 4px 12px;
+	line-height: 1.4;
+	transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.hospitaliti-skill-tag:hover {
+	opacity: 0.82;
+	transform: translateY(-1px);
+}
+
+/* =============================================================================
+   Application form
+   ============================================================================= */
+
+.hospitaliti-apply-section {
+	/* Spacing within the section container — border/background now belong
+	   to .hospitaliti-detail-section-apply, the outer section wrapper. */
+	margin-top: 0;
+	padding:20px;
+}
+
+/* On the virtual detail page, center the apply section within the 820px
+   container so it matches the 540px-centered standalone form exactly. */
+.hospitaliti-detail-section-apply .hospitaliti-apply-section {
+	max-width: 540px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 2rem;
+	padding-bottom: 1rem;
+}
+
+/* ── Apply button (external link) ───────────────────────────────────────────── */
+
+.hospitaliti-apply-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 28px;
+	border: 1.5px solid var(--hc-primary);
+	border-radius: 0px;
+	background: var(--hc-primary);
+	color: var(--hc-accent);
+	font-size: 14px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	text-decoration: none;
+	line-height: 1;
+	letter-spacing: 0.01em;
+    justify-content: center;
+    width: 30%;
+	transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.hospitaliti-apply-btn:hover:not(:disabled) {
+	background: color-mix(in srgb, var(--hc-primary) 82%, #000);
+	color: var(--hc-accent);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+.hospitaliti-apply-btn:hover {
+    background: transparent !important;
+    border-color: var(--hc-primary);
+    color: var(--hc-primary)!important;
+    text-decoration: none !important;
+}
+.hospitaliti-apply-btn:active:not(:disabled) {
+	transform: translateY(0);
+	box-shadow: none;
+}
+
+.hospitaliti-apply-btn:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.hospitaliti-apply-btn:focus-visible {
+	outline: 2px solid var(--hc-primary);
+	outline-offset: 3px;
+}
+
+/* Spinner keyframe — shared by the company Load More button */
+@keyframes hospitaliti-lm-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* ── Bottom back link ────────────────────────────────────────────────────────── */
+
+.hospitaliti-detail-back {
+	margin-top: 48px;
+	padding-top: 24px;
+	border-top: 1px solid #f0f0f0;
+}
+
+.hospitaliti-detail-back a {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--hc-primary);
+	text-decoration: none;
+	transition: color 0.15s ease;
+}
+
+.hospitaliti-detail-back a:hover {
+	color: color-mix(in srgb, var(--hc-primary) 75%, #000);
+	text-decoration: none !important; 
+}
+
+/* =============================================================================
+   Company listing — Load More button
+   Scoped under .hospitaliti-careers-section so it uses --hc-primary /
+   --hc-accent (from careers settings) rather than --hj-primary (from the
+   general jobs widget). This ensures the correct colour even when
+   hospitaliti-jobs.css is not loaded on the page.
+   ============================================================================= */
+
+.hospitaliti-careers-section .hospitaliti-load-more-wrap {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	margin: 32px 0 8px;
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more-wrap::before,
+.hospitaliti-careers-section .hospitaliti-load-more-wrap::after {
+	content: '';
+	flex: 1;
+	height: 1px;
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more-wrap::before {
+	background: linear-gradient(to right, transparent, #e5e7eb);
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more-wrap::after {
+	background: linear-gradient(to left, transparent, #e5e7eb);
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	flex-shrink: 0;
+	margin: 0 20px;
+	padding: 10px 26px;
+	border: 1.5px solid var(--hc-primary);
+	border-radius: 100px;
+	background: transparent;
+	color: var(--hc-primary);
+	font-size: 13.5px;
+	font-weight: 600;
+	font-family: inherit;
+	line-height: 1;
+	letter-spacing: 0.01em;
+	cursor: pointer;
+	white-space: nowrap;
+	transition:
+		background   0.2s ease,
+		color        0.2s ease,
+		box-shadow   0.2s ease,
+		transform    0.15s ease,
+		border-color 0.2s ease;
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more:hover:not(:disabled) {
+	background: var(--hc-primary);
+	color: var(--hc-accent, #ffffff);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 18px color-mix(in srgb, var(--hc-primary) 22%, transparent);
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more:active:not(:disabled) {
+	transform: translateY(0);
+	box-shadow: 0 2px 6px color-mix(in srgb, var(--hc-primary) 18%, transparent);
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more:focus-visible {
+	outline: 2px solid var(--hc-primary);
+	outline-offset: 3px;
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+/* Spinner / arrow icon — show/hide states */
+.hospitaliti-careers-section .hospitaliti-load-more-spinner,
+.hospitaliti-careers-section .hospitaliti-load-more-icon {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more-spinner {
+	display: none;
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more.is-loading .hospitaliti-load-more-spinner {
+	display: flex;
+	animation: hospitaliti-lm-spin 0.75s linear infinite;
+}
+
+.hospitaliti-careers-section .hospitaliti-load-more.is-loading .hospitaliti-load-more-icon {
+	display: none;
+}
+
+/* =============================================================================
+   Utility
+   ============================================================================= */
+
+.hospitaliti-hidden {
+	display: none !important;
+}
+
+/* =============================================================================
+   Page Loader  (Minimal theme — rendered only when hospitaliti_theme = minimal)
+   ============================================================================= */
+
+.hospitaliti-page-loader {
+	position: fixed;
+	inset: 0;
+	z-index: 99999;
+	background: #ffffff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: opacity 0.55s ease, visibility 0.55s ease;
+	/* CSS-only fallback: auto-hide after 3 s even if JS never runs.
+	   animation-fill-mode: forwards keeps the final hidden state. */
+	animation: hj-loader-autohide 0.55s ease 3s forwards;
+}
+
+@keyframes hj-loader-autohide {
+	to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+.hospitaliti-page-loader.is-hidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	/* Cancel the auto-hide animation once JS has already hidden the loader. */
+	animation: none;
+}
+
+/* Logo ring wrapper — coloured border using primary color */
+.hospitaliti-loader-logo-ring {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	padding: 5px;
+	border: 3px solid var(--hc-primary, #016a6d);
+	box-shadow: 0 0 0 0 color-mix(in srgb, var(--hc-primary, #016a6d) 30%, transparent);
+	animation: hj-loader-ring-pulse 1.6s ease-in-out infinite;
+}
+
+.hospitaliti-loader-logo-ring img {
+	display: block;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	object-fit: contain;
+}
+
+/* Initials fallback — shown when no WP logo is set */
+.hospitaliti-loader-initials {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	background: var(--hc-primary, #016a6d);
+	color: var(--hc-accent, #ffffff);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 28px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	font-family: inherit;
+}
+
+@keyframes hj-loader-ring-pulse {
+	0%, 100% {
+		transform: scale(1);
+		box-shadow: 0 0 0 0 color-mix(in srgb, var(--hc-primary, #016a6d) 30%, transparent);
+	}
+	50% {
+		transform: scale(1.04);
+		box-shadow: 0 0 0 10px color-mix(in srgb, var(--hc-primary, #016a6d) 0%, transparent);
+	}
+}
+
+/* =============================================================================
+   Scroll Reveal  (data-hj-reveal — only output in Minimal theme via PHP)
+   ============================================================================= */
+
+[data-hj-reveal] {
+	opacity: 0;
+	transform: translateY(36px);
+	/* Transition fires when JS adds the .hj-revealed class — either for
+	   above-fold elements after the loader hides, or for below-fold elements
+	   as IntersectionObserver detects them entering the viewport on scroll. */
+	transition: opacity 0.65s ease, transform 0.65s ease;
+	will-change: opacity, transform;
+}
+
+[data-hj-reveal].hj-revealed {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Stagger delays for above-fold elements — applied via data-hj-delay in the template */
+[data-hj-delay="1"] { transition-delay: 0.12s; }
+[data-hj-delay="2"] { transition-delay: 0.24s; }
+[data-hj-delay="3"] { transition-delay: 0.36s; }
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	[data-hj-reveal] {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+	.hospitaliti-page-loader {
+		display: none;
+	}
+}
+
+/* =============================================================================
+   Minimal (Light) Theme — Job detail page
+   Activated when the admin selects "Minimal (Light)" in Settings → Branding.
+   Applied via the hospitaliti-theme-minimal class on the <article> wrapper.
+   The banner is server-side suppressed for this theme (see job-detail.php).
+   Color pickers (--hc-primary, --hc-bg, --hc-accent) still control brand
+   colors; this theme only redefines spacing, backgrounds, and typography.
+   ============================================================================= */
+
+/* ── Page sections ────────────────────────────────────────────────────────── */
+
+/* Both sections keep the full-width breakout but use a clean white/light palette. */
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-section-info {
+	background: #ffffff;
+	padding-top: 40px;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-section-apply {
+	background: color-mix(in srgb, var(--hc-primary, #016a6d) 4%, #f9fafb);
+	border-top: 1px solid #e5e7eb;
+}
+
+/* ── Back breadcrumb ──────────────────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-breadcrumb {
+	margin-bottom: 28px;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-breadcrumb a {
+	font-size: 13px;
+	font-weight: 500;
+	color: #6b7280;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	transition: color 0.15s ease;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-breadcrumb a:hover {
+	color: var(--hc-primary, #016a6d);
+}
+
+/* ── Job header ───────────────────────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-org {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--hc-primary, #016a6d);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	margin-bottom: 10px;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-title {
+	font-size: clamp(24px, 4vw, 38px);
+	font-weight: 700;
+	color: var(--hc-primary, #111827); /* respects Job Detail Page → Primary Color setting */
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	margin: 0 0 20px;
+}
+
+/* ── Meta badges ──────────────────────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 36px;
+	padding-bottom: 28px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-badge {
+	background: color-mix(in srgb, var(--hc-primary, #016a6d) 80%, #ffffff);	
+	color: var(--hc-accent, #374151) !important;
+	border: 1px solid #e5e7eb;
+	border-radius: 6px;
+	padding: 5px 12px;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+/* ── Job description & sections ───────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-content {
+	color: var(--hc-primary, #374151) !important;
+	line-height: 1.75;
+	max-width: 780px;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-description {
+	font-size: 15px;
+	color: #374151;
+	margin-bottom: 32px;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-section {
+	margin-top: 28px;
+	padding-top: 28px;
+	border-top: 1px solid #f0f0f0;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-section-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--hc-primary,inherit); 
+	letter-spacing: 0.01em;
+	margin: 0 0 12px;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-list {
+	padding-left: 20px;
+	margin: 0;
+	color: #4b5563;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-list li {
+	margin-bottom: 6px;
+	line-height: 1.6;
+}
+
+/* ── Skill tags ───────────────────────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-skill-tag {
+	background: color-mix(in srgb, var(--hc-primary, #016a6d) 80%, #ffffff);
+	color: color-mix(in srgb, var(--hc-accent, #016a6d) 85%, #000000);
+	border: 1px solid color-mix(in srgb, var(--hc-primary, #016a6d) 20%, #e5e7eb);
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 500;
+	padding: 4px 12px;
+}
+
+/* ── Apply section ────────────────────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-apply-section {
+	max-width: 780px;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-apply-heading {
+	font-size: 20px;
+	font-weight: 600;
+	margin: 0 0 24px;
+}
+
+/* ── Apply / Submit button ────────────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-apply-btn {
+	border-radius: 0px;
+	font-size: 15px;
+	font-weight: 600;
+	padding: 12px 28px;
+	letter-spacing: 0.01em;
+}
+
+/* ── Back link ────────────────────────────────────────────────────────────── */
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-back {
+	margin-top: 28px;
+	padding-top: 20px;
+	border-top: 1px solid #e5e7eb;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-back a {
+	font-size: 13px;
+	font-weight: 500;
+	color: #6b7280;
+	text-decoration: none;
+	transition: color 0.15s ease;
+}
+
+.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-back a:hover {
+	color: var(--hc-primary, #016a6d);
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+	.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-section-info {
+		padding-top: 24px;
+	}
+
+	.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-title {
+		font-size: 22px;
+	}
+
+	.hospitaliti-theme-minimal.hospitaliti-job-detail .hospitaliti-detail-meta {
+		gap: 6px;
+	}
+}

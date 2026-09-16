@@ -1,0 +1,1391 @@
+/* =============================================================================
+   Hospitaliti Jobs Widget — Stylesheet
+   All selectors are namespaced to avoid theme conflicts.
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------
+   Intro text (optional, configured in Settings → Job Listing)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-listing-intro {
+	padding: 16px 0 8px;
+	font-size: 15px;
+	line-height: 1.65;
+	color: inherit;
+	font-family: inherit;
+}
+
+.hospitaliti-listing-intro a {
+	color: var(--hj-primary, inherit);
+}
+
+/* --------------------------------------------------------------------------
+   Section header (optional title via title="" shortcode attribute)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-jobs-header {
+	background: var(--hj-bg, #111111);
+	padding: 32px 24px;
+	margin-bottom: 24px;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.hospitaliti-jobs-title {
+	margin: 0;
+	font-size: clamp(22px, 4vw, 34px);
+	font-weight: 700;
+	color: var(--hj-accent, #ffffff);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	line-height: 1.15;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Brand colour defaults — overridden at runtime by wp_add_inline_style()
+   which targets :root so values are available to every element on the page. */
+:root {
+	--hj-primary: #016a6d;
+	--hj-bg:      #111111;
+	--hj-accent:  #ffffff;
+}
+
+.hospitaliti-jobs-list {
+	display: block;
+	width: 100%;
+	font-family: inherit;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.hospitaliti-jobs-cards {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Job card  —  matches the Hospitaliti platform card UI
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-job-card {
+	display: flex;
+	flex-direction: column;
+	padding: 16px;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	background: #ffffff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-sizing: border-box;
+	width: 100%;
+	transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.hospitaliti-job-card:hover {
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+	transform: translateY(-1px);
+}
+
+/* ── Top row ─────────────────────────────────────────────────────────────── */
+
+.hospitaliti-job-top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 8px;
+	width: 100%;
+}
+
+.hospitaliti-job-top-left {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	min-width: 0;
+	flex: 1;
+}
+
+/* Company logo: 32 × 32, rounded-xl, drop shadow */
+.hospitaliti-job-logo {
+	flex-shrink: 0;
+	width: 32px;
+	height: 32px;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); /* shadow */
+	background: #f9fafb;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.hospitaliti-job-logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Info block: title + company */
+.hospitaliti-job-info {
+	min-width: 0;
+	flex: 1;
+}
+
+/* Title link — only the title is clickable */
+.hospitaliti-job-link {
+	display: block;
+	text-decoration: none !important;
+	color: inherit;
+}
+
+.hospitaliti-job-title {
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+	margin: 0;
+	color: #111827;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	transition: color 0.15s ease;
+}
+
+.hospitaliti-job-link:hover .hospitaliti-job-title {
+	color: var(--hj-primary, #016a6d);
+}
+
+.hospitaliti-job-company {
+	font-size: 12px;
+	color: #9ca3af;
+	margin: 2px 0 0;
+	line-height: 1.3;
+}
+
+
+
+/* ── Bottom row ──────────────────────────────────────────────────────────── */
+
+.hospitaliti-job-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+/* Candidates count (left) */
+.hospitaliti-job-candidates {
+	display: flex;
+	align-items: center;
+	gap: 3px;
+	font-size: 12px;
+	color: #9ca3af;
+	white-space: nowrap;
+}
+
+/* Meta: type · salary · date (right) */
+.hospitaliti-job-meta {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 6px;
+}
+
+/* Employment type — pill tag using brand primary + accent colours */
+.hospitaliti-job-type {
+	display: inline-flex;
+	align-items: center;
+	font-size: 11px;
+	font-weight: 500;
+	background: var(--hj-primary, #016a6d);
+	color: var(--hj-accent, #ffffff);
+	padding: 3px 10px;
+	border-radius: 100px;
+	line-height: 1.4;
+	white-space: nowrap;
+	transition: opacity 0.15s ease;
+}
+
+.hospitaliti-job-type:hover {
+	opacity: 0.85;
+}
+
+/* Salary — subtle grey text */
+.hospitaliti-job-salary {
+	font-size: 12px;
+	color: #6b7280;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+/* Date — disabled grey */
+.hospitaliti-job-date {
+	font-size: 12px;
+	color: #9ca3af;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Utility
+   -------------------------------------------------------------------------- */
+
+/* Applied by PHP when last_page <= 1; toggled by JS on per-page change. */
+.hospitaliti-hidden {
+	display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Table footer  (DataTable-style: per-page left, pagination right)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-table-footer {
+	display: flex;
+	width: 100%;
+	box-sizing: border-box;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 14px;	
+}
+
+/* --------------------------------------------------------------------------
+   Per-page dropdown  (left side of table footer)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-per-page-wrap {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.hospitaliti-per-page-label {
+	font-size: 12px;
+	color: #94a3b8;
+	font-family: inherit;
+	white-space: nowrap;
+	user-select: none;
+	letter-spacing: 0.01em;
+}
+
+/* ── Custom dropdown container ───────────────────────────────────────────── */
+.hospitaliti-per-page-dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+/* Trigger button */
+.hospitaliti-per-page-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 32px;
+	padding: 0 10px;
+	border: 1px solid #9ca3af;
+	border-radius: 6px;
+	background: #ffffff;
+	color: var(--hj-primary, #016a6d);
+	font-size: 12px;
+	font-weight: 500;
+	font-family: inherit;
+	cursor: pointer;
+	margin: 2px;
+	justify-content: space-between;
+	transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+	white-space: nowrap;
+}
+
+.hospitaliti-per-page-btn:hover {
+	border-color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 6%, #fff);
+	color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+}
+
+.hospitaliti-per-page-btn:focus {
+	outline: none;
+	border-color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--hj-primary, #016a6d) 15%, transparent);
+	color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+}
+
+/* Prevent browser default blue/grey flash on click */
+.hospitaliti-per-page-btn:active {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 6%, #fff);
+	border-color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+	color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+}
+
+/* Open state — lock in consistent appearance, override browser defaults */
+.hospitaliti-per-page-dropdown.is-open .hospitaliti-per-page-btn {
+	border-color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 6%, #fff);
+	color: color-mix(in srgb, var(--hj-primary, #016a6d) 75%, #000);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--hj-primary, #016a6d) 15%, transparent);
+}
+
+.hospitaliti-per-page-btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.hospitaliti-per-page-chevron {
+	color: var(--hj-primary, #016a6d);
+	flex-shrink: 0;
+	transition: transform 0.15s ease;
+}
+
+/* Rotate chevron when open */
+.hospitaliti-per-page-dropdown.is-open .hospitaliti-per-page-chevron {
+	transform: rotate(180deg);
+}
+
+/* ── Dropdown menu ───────────────────────────────────────────────────────── */
+.hospitaliti-per-page-menu {
+	display: none;
+	position: absolute;
+	bottom: calc(100% + 4px);   /* opens upward above the button */
+	left: 0;
+	min-width: 100%;
+	list-style: none;
+	margin: 0;
+	padding: 4px !important;
+	background: #ffffff;
+	border: 1px solid color-mix(in srgb, var(--hj-primary, #016a6d) 18%, #fff);
+	border-radius: 8px;
+	box-shadow: 0 4px 16px color-mix(in srgb, var(--hj-primary, #016a6d) 12%, transparent);
+	z-index: 9999;
+	box-sizing: border-box;
+}
+
+/* Show when open */
+.hospitaliti-per-page-dropdown.is-open .hospitaliti-per-page-menu {
+	display: block;
+}
+
+/* ── Option items ────────────────────────────────────────────────────────── */
+.hospitaliti-per-page-option {
+	padding: 6px 10px;
+	border-radius: 5px;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--hj-primary, #016a6d);
+	cursor: pointer;
+	transition: background 0.12s ease, color 0.12s ease;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* Hover */
+.hospitaliti-per-page-option:hover {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 6%, #fff);
+	color: var(--hj-primary, #016a6d);
+}
+
+/* Active / selected — stronger tint + primary text (matches filter row active) */
+.hospitaliti-per-page-option.is-active {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 25%, #fff);
+	color: var(--hj-primary, #016a6d);
+	font-weight: 600;
+	cursor: default;
+}
+
+/* --------------------------------------------------------------------------
+   Numbered pagination  (right side of table footer)
+   Primary colour: var(--hj-primary, #016a6d)
+     — Normal  : border #9ca3af, bg white, text primary
+     — Hover   : 10% primary tint bg, primary border, primary text
+     — Active  : 25% primary tint bg, primary border, primary bold text
+     — Disabled: muted grey
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-pagination {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+	font-size: 14px;
+	line-height: 1.25;
+}
+
+/* ── Base style shared by ALL pagination cells ──────────────────────────── */
+.hospitaliti-prev-page,
+.hospitaliti-next-page,
+.hospitaliti-page-btn,
+.hospitaliti-page-ellipsis {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 32px;
+	padding: 0 12px;
+	margin-left: -1px;           /* collapses adjacent borders into one line  */
+	border: 1px solid #9ca3af;
+	background: #ffffff;
+	color: var(--hj-primary, #016a6d);              /* primary */
+	font-size: 14px;
+	font-family: inherit;
+	line-height: 1.25;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+	text-decoration: none;
+}
+
+/* Previous — leftmost cell: left-side rounded, no negative margin */
+.hospitaliti-prev-page {
+	margin-left: 0;
+	border-radius: 8px 0 0 8px;
+}
+
+/* Next — rightmost cell: right-side rounded */
+.hospitaliti-next-page {
+	border-radius: 0 8px 8px 0;
+}
+
+/* Numbered page buttons — no radius */
+.hospitaliti-page-btn {
+	border-radius: 0;
+	color: var(--hj-primary, #016a6d); /* primary */
+}
+
+/* Active / current page — solid primary fill + accent text */
+.hospitaliti-page-btn.is-active {
+	background: var(--hj-primary, #016a6d);
+	border-color: var(--hj-primary, #016a6d);
+	color: var(--hj-accent, #ffffff);
+	font-weight: 600;
+	cursor: default;
+	position: relative;
+	z-index: 1;
+}
+
+.hospitaliti-page-btn.is-active:hover {
+	background: var(--hj-primary, #016a6d);
+	color: var(--hj-accent, #ffffff);
+}
+
+/* Ellipsis marker — no pointer, no hover */
+.hospitaliti-page-ellipsis {
+	cursor: default;
+	color: #9ca3af;
+	padding: 0 8px;
+}
+
+/* ── Hover states — light tint + primary text + primary border ──────────── */
+.hospitaliti-prev-page:hover:not(:disabled),
+.hospitaliti-next-page:hover:not(:disabled) {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 10%, #fff);
+	border-color: var(--hj-primary, #016a6d);
+	color: var(--hj-primary, #016a6d);
+}
+
+.hospitaliti-page-btn:not(.is-active):hover {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 10%, #fff);
+	border-color: var(--hj-primary, #016a6d);
+	color: var(--hj-primary, #016a6d);
+}
+
+/* ── Disabled state ──────────────────────────────────────────────────────── */
+.hospitaliti-prev-page:disabled,
+.hospitaliti-next-page:disabled {
+	color: #9ca3af;
+	border-color: #d1d5db;
+	background: #f9fafb;
+	cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   Load More button
+   -------------------------------------------------------------------------- */
+
+/* Wrapper — horizontal rule with button centred between two fading lines */
+.hospitaliti-load-more-wrap {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	margin: 32px 0 8px;
+}
+
+.hospitaliti-load-more-wrap::before,
+.hospitaliti-load-more-wrap::after {
+	content: '';
+	flex: 1;
+	height: 1px;
+}
+
+.hospitaliti-load-more-wrap::before {
+	background: linear-gradient(to right, transparent, #e5e7eb);
+}
+
+.hospitaliti-load-more-wrap::after {
+	background: linear-gradient(to left, transparent, #e5e7eb);
+}
+
+/* Button — pill shape, teal outline → solid fill on hover */
+.hospitaliti-load-more {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	flex-shrink: 0;
+	margin: 0 20px;
+	padding: 10px 26px;
+	border: 1.5px solid var(--hj-primary, #016a6d);
+	border-radius: 100px;
+	background: transparent;
+	color: var(--hj-primary, #016a6d);
+	font-size: 13.5px;
+	font-weight: 600;
+	font-family: inherit;
+	line-height: 1;
+	letter-spacing: 0.01em;
+	cursor: pointer;
+	white-space: nowrap;
+	transition:
+		background  0.2s ease,
+		color       0.2s ease,
+		box-shadow  0.2s ease,
+		transform   0.15s ease,
+		border-color 0.2s ease;
+}
+
+.hospitaliti-load-more:hover:not(:disabled) {
+	background: var(--hj-primary, #016a6d);
+	color: var(--hj-accent, #ffffff);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 18px color-mix(in srgb, var(--hj-primary, #016a6d) 22%, transparent);
+}
+
+.hospitaliti-load-more:active:not(:disabled) {
+	transform: translateY(0);
+	box-shadow: 0 2px 6px color-mix(in srgb, var(--hj-primary, #016a6d) 18%, transparent);
+}
+
+.hospitaliti-load-more:focus-visible {
+	outline: 2px solid var(--hj-primary, #016a6d);
+	outline-offset: 3px;
+}
+
+.hospitaliti-load-more:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+/* Icons */
+.hospitaliti-load-more-spinner,
+.hospitaliti-load-more-icon {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+/* Loading state: show spinner, hide arrow */
+.hospitaliti-load-more-spinner {
+	display: none;
+}
+
+.hospitaliti-load-more.is-loading .hospitaliti-load-more-spinner {
+	display: flex;
+	animation: hospitaliti-lm-spin 0.75s linear infinite;
+}
+
+.hospitaliti-load-more.is-loading .hospitaliti-load-more-icon {
+	display: none;
+}
+
+@keyframes hospitaliti-lm-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   Empty state  (no results)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px;
+	text-align: center;
+	gap: 8px;
+}
+
+.hospitaliti-empty-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	background: #f9fafb;
+	margin-bottom: 4px;
+}
+
+.hospitaliti-empty-title {
+	font-size: 15px;
+	font-weight: 600;
+	color: #374151;
+	margin: 0;
+	line-height: 1.4;
+}
+
+.hospitaliti-empty-subtitle {
+	font-size: 13px;
+	color: #9ca3af;
+	margin: 0;
+	line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Error state
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-error {
+	font-size: 13px;
+	color: #718096;
+	text-align: center;
+	padding: 20px 12px;
+	margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Loading indicator (appended by JS while fetching)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-loading {
+	text-align: center;
+	padding: 10px;
+	font-size: 12px;
+	color: #a0aec0;
+	font-style: italic;
+}
+
+/* =============================================================================
+   Search bar
+   ============================================================================= */
+
+.hospitaliti-search-wrap {
+	position: relative;
+	display: flex;
+	align-items: center;
+	margin-bottom: 16px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.hospitaliti-search-icon {
+	position: absolute;
+	left: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #9ca3af;
+	pointer-events: none;
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.hospitaliti-search-input {
+	width: 100%;
+	padding: 10px 40px 10px 42px !important; /* left padding for icon, right for clear btn */
+	border: 1px solid #e5e7eb;
+	border-radius: 12px !important;
+	background: #ffffff;
+	color: #111827;
+	font-size: 14px;
+	font-family: inherit;
+	line-height: 1.5;
+	box-sizing: border-box;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+/* Remove the browser-native ✕ from type="search" — we use our own */
+.hospitaliti-search-input::-webkit-search-cancel-button { display: none; }
+
+.hospitaliti-search-input::placeholder {
+	color: #9ca3af;
+}
+
+.hospitaliti-search-input:focus {
+	outline: none;
+	border-color: var(--hj-primary, #016a6d);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--hj-primary, #016a6d) 15%, transparent);
+}
+
+.hospitaliti-search-input:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.hospitaliti-search-clear {
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border: none;
+	border-radius: 50%;
+	background: #e5e7eb;
+	color: #6b7280;
+	font-size: 14px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0;
+	font-family: inherit;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hospitaliti-search-clear:hover {
+	background: #d1d5db;
+	color: #111827;
+}
+
+/* ── Debouncing state ───────────────────────────────────────────────────────
+   Applied immediately on every keystroke; removed when the AJAX call fires.
+   Gives instant "I heard you" feedback, just like a Vue reactive watcher.    */
+.hospitaliti-search-wrap.is-debouncing .hospitaliti-search-input {
+	border-color: var(--hj-primary, #016a6d);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--hj-primary, #016a6d) 12%, transparent);
+}
+
+/* ── Searching state ────────────────────────────────────────────────────────
+   Applied while the AJAX request is in-flight; replaces the magnifier with
+   a CSS spinner so the user knows results are loading.                        */
+.hospitaliti-search-wrap.is-searching .hospitaliti-search-icon svg {
+	opacity: 0;
+}
+
+.hospitaliti-search-wrap.is-searching .hospitaliti-search-icon::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	width: 14px;
+	height: 14px;
+	margin: auto;
+	border: 2px solid #e5e7eb;
+	border-top-color: var(--hj-primary, #016a6d);
+	border-radius: 50%;
+	animation: hospitaliti-search-spin 0.7s linear infinite;
+}
+
+@keyframes hospitaliti-search-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   Filter sidebar + 2-column layout
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------
+   2-column layout: filter (left) + jobs (right)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-layout {
+	display: flex;
+	align-items: flex-start;
+	gap: 20px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* No filter sidebar — jobs column spans the full width */
+.hospitaliti-layout--no-filter {
+	display: block;
+}
+
+.hospitaliti-jobs-column {
+	position: relative; /* anchor for the loading overlay */
+	flex: 1;
+	min-width: 0; /* prevent flex blowout */
+}
+
+/* ── Cards loading overlay ───────────────────────────────────────────────────
+   Triggered by JS adding .is-fetching to .hospitaliti-jobs-column.
+   Covers the entire column (cards + table footer) so nothing is clickable
+   while the AJAX request is in-flight.                                       */
+
+.hospitaliti-cards-loader {
+	display: none;
+	position: absolute;
+	inset: 0;
+	z-index: 20;
+	align-items: center;
+	justify-content: center;
+	min-height: 120px;
+	background: rgba(255, 255, 255, 0.72);
+	border-radius: 12px;
+	backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px);
+	pointer-events: all;
+}
+
+.hospitaliti-jobs-column.is-fetching .hospitaliti-cards-loader {
+	display: flex;
+}
+
+/* Dim the card list behind the overlay for depth */
+.hospitaliti-jobs-column.is-fetching .hospitaliti-jobs-cards {
+	opacity: 0.35;
+	pointer-events: none;
+	user-select: none;
+	transition: opacity 0.15s ease;
+}
+
+/* Spinner ring */
+.hospitaliti-cards-loader-ring {
+	display: block;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	border: 3.5px solid #e5e7eb;
+	border-top-color: var(--hj-primary, #016a6d);
+	animation: hospitaliti-cards-spin 0.72s linear infinite;
+}
+
+@keyframes hospitaliti-cards-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile filter toggle button (hidden on desktop)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-filter-toggle {
+	display: none; /* shown only on mobile via media query */
+	align-items: center;
+	gap: 6px;
+	padding: 7px 14px;
+	margin-bottom: 12px;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #334155;
+	font-size: 13px;
+	font-weight: 500;
+	font-family: inherit;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.hospitaliti-filter-toggle:hover {
+	border-color: var(--hj-primary, #016a6d);
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 8%, #fff); /* J-1: was hardcoded #f0f7ff */
+	color: var(--hj-primary, #016a6d);
+}
+
+.hospitaliti-filter-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	border-radius: 9px;
+	background: var(--hj-primary, #016a6d);
+	color: var(--hj-accent, #ffffff);
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Filter sidebar
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-filter-sidebar {
+	width: 200px;
+	flex-shrink: 0;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	background: #ffffff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	overflow: hidden;
+	box-sizing: border-box;
+	/* Sticky: sidebar stays in view while scrolling the job list */
+	position: sticky;
+	top: 20px;
+	max-height: calc(100vh - 40px);
+	overflow-y: auto;
+}
+
+.hospitaliti-filter-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 16px 10px;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+.hospitaliti-filter-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #111827;
+	margin: 0;
+	line-height: 1.3;
+}
+
+.hospitaliti-filter-clear {
+	padding: 4px;
+	border: none;
+	background: none;
+	color: var(--hj-primary, #016a6d); 
+	cursor: pointer;
+	line-height: 0;
+	border-radius: 4px;
+	transition: color 0.2s ease, transform 0.35s ease;
+}
+
+.hospitaliti-filter-clear:hover {
+	color: var(--hj-primary, #016a6d);
+	transform: rotate(-180deg);
+}
+
+/* --------------------------------------------------------------------------
+   Filter section (Employment Types)
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-filter-section {
+	padding: 14px 16px;
+}
+
+.hospitaliti-filter-section-title {
+	font-size: 12px;
+	font-weight: 600;
+	color: #111827;
+	margin: 0 0 10px;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.hospitaliti-filter-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.hospitaliti-filter-item {
+	margin: 0;
+	padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Custom checkbox row
+   -------------------------------------------------------------------------- */
+
+.hospitaliti-filter-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	position: relative;
+}
+
+/* Hide the native checkbox */
+.hospitaliti-filter-type,
+.hospitaliti-filter-company {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+}
+
+/* Custom checkmark box */
+.hospitaliti-filter-checkmark {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	border: 1.5px solid #cbd5e1;
+	border-radius: 4px;
+	background: #ffffff;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+/* Tick SVG via CSS */
+.hospitaliti-filter-checkmark::after {
+	content: '';
+	display: block;
+	width: 9px;
+	height: 5px;
+	border-left: 2px solid #ffffff;
+	border-bottom: 2px solid #ffffff;
+	transform: rotate(-45deg) translateY(-1px);
+	opacity: 0;
+	transition: opacity 0.1s ease;
+}
+
+/* Checked state */
+.hospitaliti-filter-type:checked + .hospitaliti-filter-checkmark,
+.hospitaliti-filter-company:checked + .hospitaliti-filter-checkmark {
+	border-color: var(--hj-primary, #016a6d);
+	background: var(--hj-primary, #016a6d);
+}
+
+.hospitaliti-filter-type:checked + .hospitaliti-filter-checkmark::after,
+.hospitaliti-filter-company:checked + .hospitaliti-filter-checkmark::after {
+	opacity: 1;
+}
+
+/* Disabled state */
+.hospitaliti-filter-type:disabled + .hospitaliti-filter-checkmark,
+.hospitaliti-filter-company:disabled + .hospitaliti-filter-checkmark {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.hospitaliti-filter-label:has(.hospitaliti-filter-type:disabled),
+.hospitaliti-filter-label:has(.hospitaliti-filter-company:disabled) {
+	cursor: not-allowed;
+}
+
+/* Focus ring for keyboard nav */
+.hospitaliti-filter-type:focus-visible + .hospitaliti-filter-checkmark,
+.hospitaliti-filter-company:focus-visible + .hospitaliti-filter-checkmark {
+	outline: 2px solid var(--hj-primary, #016a6d);
+	outline-offset: 2px;
+}
+
+.hospitaliti-filter-text {
+	font-size: 13px;
+	color: #374151;
+	line-height: 1.4;
+	user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   Employment Types — option row hover + checked-row styles
+   Matches the Experience Level row design so both filter sections feel
+   identical: full-row hover tint, stronger tint + primary text when active.
+   -------------------------------------------------------------------------- */
+
+/* Full-width row so the entire label is the click target */
+.hospitaliti-filter-section:has(.hospitaliti-filter-type) .hospitaliti-filter-item,
+.hospitaliti-filter-section:has(.hospitaliti-filter-company) .hospitaliti-filter-item {
+	border-radius: 6px;
+	transition: background 0.12s ease;
+}
+
+.hospitaliti-filter-section:has(.hospitaliti-filter-type) .hospitaliti-filter-label,
+.hospitaliti-filter-section:has(.hospitaliti-filter-company) .hospitaliti-filter-label {
+	padding: 5px 8px;
+	border-radius: 6px;
+	width: 100%;
+	box-sizing: border-box;
+	transition: background 0.12s ease;
+}
+
+/* Hover — light primary tint over the whole row */
+.hospitaliti-filter-section:has(.hospitaliti-filter-type) .hospitaliti-filter-label:hover,
+.hospitaliti-filter-section:has(.hospitaliti-filter-company) .hospitaliti-filter-label:hover {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 6%, #fff);
+}
+
+/* Checked row — stronger tint + primary-coloured label text */
+.hospitaliti-filter-section:has(.hospitaliti-filter-type) .hospitaliti-filter-item:has(.hospitaliti-filter-type:checked) .hospitaliti-filter-label,
+.hospitaliti-filter-section:has(.hospitaliti-filter-company) .hospitaliti-filter-item:has(.hospitaliti-filter-company:checked) .hospitaliti-filter-label {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 25%, #fff);
+}
+
+.hospitaliti-filter-section:has(.hospitaliti-filter-type) .hospitaliti-filter-item:has(.hospitaliti-filter-type:checked) .hospitaliti-filter-text,
+.hospitaliti-filter-section:has(.hospitaliti-filter-company) .hospitaliti-filter-item:has(.hospitaliti-filter-company:checked) .hospitaliti-filter-text {
+	color: var(--hj-primary, #016a6d) !important;
+	font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Experience Level — option row styles
+   Each <li> gets a hover + selected state so the entire row feels clickable.
+   Shared list/item/label base styles live in the filter section above.
+   -------------------------------------------------------------------------- */
+
+/* Add a divider between Employment Types and Experience Level sections */
+.hospitaliti-filter-section + .hospitaliti-filter-section {
+	border-top: 1px solid #f1f5f9;
+	padding-top: 14px;
+}
+
+/* Option row — full-width pill so the whole row is the click target */
+.hospitaliti-filter-section:has(.hospitaliti-filter-experience) .hospitaliti-filter-item {
+	border-radius: 6px;
+	transition: background 0.12s ease;
+}
+
+.hospitaliti-filter-section:has(.hospitaliti-filter-experience) .hospitaliti-filter-label {
+	padding: 5px 8px;
+	border-radius: 6px;
+	width: 100%;
+	box-sizing: border-box;
+	transition: background 0.12s ease;
+}
+
+/* Hover — light green tint over the whole row */
+.hospitaliti-filter-section:has(.hospitaliti-filter-experience) .hospitaliti-filter-label:hover {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 6%, #fff);
+}
+
+/* Selected row — stronger green tint + primary text */
+.hospitaliti-filter-section:has(.hospitaliti-filter-experience) .hospitaliti-filter-item:has(.hospitaliti-filter-experience:checked) .hospitaliti-filter-label {
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 25%, #fff);
+}
+
+.hospitaliti-filter-section:has(.hospitaliti-filter-experience) .hospitaliti-filter-item:has(.hospitaliti-filter-experience:checked) .hospitaliti-filter-text {
+	color: var(--hj-primary, #016a6d) !important;
+	font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Experience Level — custom radio buttons
+   Circular shape distinguishes radio from square checkbox.
+   Primary colour: var(--hj-primary, #016a6d)
+   -------------------------------------------------------------------------- */
+
+/* Hide the native radio input */
+.hospitaliti-filter-experience {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+}
+
+/* Custom radio circle */
+.hospitaliti-filter-radiomark {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	border: 1.5px solid #cbd5e1;
+	border-radius: 50%;
+	background: #ffffff;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+/* Inner dot — shown when selected */
+.hospitaliti-filter-radiomark::after {
+	content: '';
+	display: block;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #ffffff;
+	opacity: 0;
+	transform: scale(0.6);
+	transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+/* Selected state */
+.hospitaliti-filter-experience:checked + .hospitaliti-filter-radiomark {
+	border-color: var(--hj-primary, #016a6d);
+	background: var(--hj-primary, #016a6d);
+}
+
+.hospitaliti-filter-experience:checked + .hospitaliti-filter-radiomark::after {
+	opacity: 1;
+	transform: scale(1);
+}
+
+/* Hover — highlight the circle border */
+.hospitaliti-filter-label:hover .hospitaliti-filter-radiomark {
+	border-color: var(--hj-primary, #016a6d);
+}
+
+/* Disabled */
+.hospitaliti-filter-experience:disabled + .hospitaliti-filter-radiomark {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.hospitaliti-filter-label:has(.hospitaliti-filter-experience:disabled) {
+	cursor: not-allowed;
+}
+
+/* Focus ring for keyboard navigation */
+.hospitaliti-filter-experience:focus-visible + .hospitaliti-filter-radiomark {
+	outline: 2px solid var(--hj-primary, #016a6d);
+	outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: stacked layout, filter collapsible
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+	.hospitaliti-layout {
+		flex-direction: column;
+		gap: 0;
+	}
+
+	.hospitaliti-filter-toggle {
+		display: inline-flex;
+	}
+
+	.hospitaliti-filter-sidebar {
+		display: none;
+		width: 100%;
+		margin-bottom: 14px;
+		border-radius: 8px;
+	}
+
+	.hospitaliti-filter-sidebar.is-open {
+		display: block;
+	}
+}
+
+/* =============================================================================
+   Minimal (Light) Theme
+   Activated when the admin selects "Minimal (Light)" in Settings → Branding.
+   Applied via the hospitaliti-theme-minimal class on the root wrapper elements.
+   Color pickers (--hj-primary, --hj-bg, --hj-accent) still control brand
+   colors; this theme only redefines layout, spacing, and default fallbacks.
+   ============================================================================= */
+
+/* ── Section header ───────────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-header.hospitaliti-theme-minimal {
+	background: transparent;
+	padding: 0 0 24px 0;
+	margin-bottom: 0;
+	border-bottom: 2px solid var(--hj-primary, #016a6d);
+}
+
+.hospitaliti-jobs-header.hospitaliti-theme-minimal .hospitaliti-jobs-title {
+	font-size: clamp(20px, 3.5vw, 28px);
+	font-weight: 600;
+	color: #111827;
+	letter-spacing: 0.01em;
+	text-transform: none;
+	text-shadow: none;
+}
+
+/* ── Jobs list wrapper ────────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal {
+	padding: 24px 0 0;
+}
+
+/* ── Search bar ───────────────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-search-wrap {
+	border: 1.5px solid #d1d5db;
+	border-radius: 8px;
+	background: #ffffff;
+	box-shadow: none;
+}
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-search-wrap:focus-within {
+	border-color: var(--hj-primary, #016a6d);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--hj-primary, #016a6d) 12%, transparent);
+}
+
+/* ── Filter sidebar ───────────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-filter-sidebar {
+	background: #fafafa;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 16px;
+}
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-filter-header {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #e5e7eb;
+	margin-bottom: 12px;
+}
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-filter-section {
+	border-top: none;
+	padding-top: 10px;
+}
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-filter-section-title {
+	font-size: 11px;
+	font-weight: 600;
+	color: #9ca3af;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	margin: 0 0 8px;
+}
+
+/* ── Job cards ────────────────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-job-card {
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #ffffff;
+	box-shadow: none;
+	padding: 20px;
+	transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-job-card:hover {
+	border-color: var(--hj-primary, #016a6d);
+	box-shadow: 0 2px 12px color-mix(in srgb, var(--hj-primary, #016a6d) 10%, transparent);
+	transform: none;
+}
+
+/* ── Employment type pill ─────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-job-type {
+	font-size: 11px;
+	font-weight: 500;
+	padding: 3px 10px;
+	border-radius: 100px;
+	background: color-mix(in srgb, var(--hj-primary, #016a6d) 10%, #ffffff);
+	color: color-mix(in srgb, var(--hj-primary, #016a6d) 80%, #000000);
+	border: 1px solid color-mix(in srgb, var(--hj-primary, #016a6d) 25%, #e5e7eb);
+}
+
+/* ── Pagination & table footer ────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-table-footer {
+	border-top: 1px solid #e5e7eb;
+	padding-top: 16px;
+	margin-top: 8px;
+}
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-page-btn {
+	border-radius: 6px;
+	font-size: 13px;
+}
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-prev-page,
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-next-page {
+	border-radius: 6px;
+	font-size: 13px;
+}
+
+/* ── Empty state ──────────────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-empty-state {
+	background: #fafafa;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+/* ── Load More button ─────────────────────────────────────────────────────── */
+
+.hospitaliti-jobs-list.hospitaliti-theme-minimal .hospitaliti-load-more {
+	border-radius: 8px;
+	font-weight: 500;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+	.hospitaliti-jobs-list.hospitaliti-theme-minimal {
+		padding-top: 16px;
+	}
+}

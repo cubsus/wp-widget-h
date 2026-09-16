@@ -1,0 +1,341 @@
+/*
+ * Hospitaliti Jobs — Bubble Listing Widget
+ *
+ * Styles for the [hospitaliti_jobs_bubbles] shortcode.
+ * Layout:
+ *   1. Optional section heading
+ *   2. Organisation filter badges (horizontal, scrollable on mobile)
+ *   3. Flexible wrap grid of circular bubbles
+ *   4. Optional CTA block at the bottom
+ *
+ * CSS custom properties injected at runtime by AssetManager::buildBubbleCss():
+ *   --hjb-primary        Brand primary colour (default #016a6d)
+ *   --hjb-bg             Section background (default #f0ede8)
+ *   --hjb-heading-color  Heading text colour (default #1a1a1a)
+ *   --hjb-badge-bg       Inactive badge background (default #e8e4de)
+ *   --hjb-badge-active   Active badge background (default #1a1a1a)
+ *   --hjb-badge-color    Badge text colour when active (default #ffffff)
+ *   --hjb-cta-bg         CTA section background (default #1a1a1a)
+ *   --hjb-cta-color      CTA section text colour (default #ffffff)
+ *   --hjb-font           Font stack (default: inherit)
+ *
+ * @package Hospitaliti_Jobs
+ */
+
+/* ── Reset/box model ─────────────────────────────────────────────────────── */
+.hj-bubbles-section *,
+.hj-bubbles-section *::before,
+.hj-bubbles-section *::after {
+	box-sizing: border-box;
+}
+
+/* ── Section wrapper ─────────────────────────────────────────────────────── */
+.hj-bubbles-section {
+	--hjb-primary:       #016a6d;
+	--hjb-bg:            #f0ede8;
+	--hjb-heading-color: #1a1a1a;
+	--hjb-badge-bg:      rgba(0, 0, 0, 0.08);
+	--hjb-badge-active:  #523d3f;
+	--hjb-badge-color:   #ffffff;
+	--hjb-cta-bg:        #1a1a1a;
+	--hjb-cta-color:     #ffffff;
+	--hjb-font:          inherit;
+
+	background-color: var(--hjb-bg);
+	padding: 3rem 1.5rem 4rem;
+	font-family: inherit;
+}
+
+/* ── Section heading ─────────────────────────────────────────────────────── */
+.hj-bubbles-heading-wrap {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.hj-bubbles-heading {
+	font-size: clamp(1.5rem, 3vw, 2.25rem);
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--hjb-heading-color);
+	margin: 0;
+	line-height: 1.2;
+}
+
+/* ── Filter badges ───────────────────────────────────────────────────────── */
+.hj-filter-badges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	justify-content: center;
+	margin-bottom: 2.5rem;
+	/* allow horizontal scroll on very small screens */
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none; /* Firefox */
+	padding: 1px;
+}
+
+.hj-filter-badges::-webkit-scrollbar {
+	display: none;
+}
+
+.hj-filter-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35em;
+	padding: 0.4em 1em;
+	border-radius: 9999px;
+	border: 1px solid transparent;
+	background: var(--hjb-badge-bg);
+	color: var(--hjb-heading-color);
+	font-size: 0.8rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+		transform 0.15s ease;
+	font-family: inherit;
+}
+
+.hj-filter-badge:hover {
+	background: rgba(0, 0, 0, 0.15);
+	transform: translateY(-1px);
+}
+
+.hj-filter-badge.is-active {
+	background: var(--hjb-badge-active);
+	color: var(--hjb-cta-color, #ffffff);
+	border-color: var(--hjb-badge-active);
+}
+
+/* Coloured dot — one per org badge, matches the bubble colour */
+.hj-filter-badge-dot {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	flex-shrink: 0;
+	/* subtle inner shadow to give the dot a little depth */
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.hj-filter-badge-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.25);
+	border-radius: 9999px;
+	padding: 0 0.4em;
+	min-width: 1.4em;
+	font-size: 0.85em;
+	line-height: 1.5;
+}
+
+.hj-filter-badge:not(.is-active) .hj-filter-badge-count {
+	background: rgba(0, 0, 0, 0.12);
+}
+
+/* ── Bubble grid ─────────────────────────────────────────────────────────── */
+.hj-bubbles-wrap {
+	display: grid;
+	grid-template-columns: repeat(4, 210px);
+	justify-content: center;
+	align-items: center;
+	gap: 1.25rem;
+	margin: 0 auto;
+}
+
+/* ── Single bubble ───────────────────────────────────────────────────────── */
+.hj-bubble {
+	/* size */
+	width: 210px;
+	height: 210px;
+	border-radius: 50%;
+
+	/* layout */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 1rem;
+	gap: 0.3em;
+
+	/* text */
+	color: #ffffff;
+	text-decoration: none !important;
+
+	/* interaction */
+	cursor: pointer;
+	transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+	will-change: transform;
+
+	/* prevent text selection on repeated clicks */
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.hj-bubble:hover {
+	transform: scale(1.07);
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+	filter: brightness(1.06);
+	text-decoration: none;
+	color: #ffffff;
+}
+
+.hj-bubble:focus-visible {
+	outline: 3px solid var(--hjb-primary);
+	outline-offset: 4px;
+}
+
+/* Organisation name — small, all-caps */
+.hj-bubble-org {
+	display: block;
+	font-size: 0.85rem;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	opacity: 1;
+	line-height: 1.3;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* Job title — main text */
+.hj-bubble-title {
+	display: block;
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 1.35;
+	text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+	/* clamp to ~4 lines before truncating */
+	display: -webkit-box;
+	-webkit-line-clamp: 5;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Hidden state — set by JS when a filter badge is active */
+.hj-bubble.is-hidden {
+	display: none;
+}
+
+/* Empty state */
+.hj-bubbles-empty {
+	grid-column: 1 / -1 !important;
+	width: 100%;
+	text-align: center;
+	color: var(--hjb-heading-color);
+	opacity: 0.6;
+	font-size: 0.95rem;
+	padding: 3rem 0;
+	margin: 0;
+}
+
+/* ── CTA section ─────────────────────────────────────────────────────────── */
+.hj-cta-section {
+	margin-top: 3rem;
+	text-align: center;
+}
+
+.hj-cta-label {
+	font-size: 0.9rem;
+	color: var(--hjb-heading-color);
+	opacity: 0.7;
+	margin: 0 0 0.9rem;
+	letter-spacing: 0.02em;
+}
+
+.hj-cta-btn {
+	display: inline-block;
+	padding: 0.65em 2em;
+	border-radius: 4px;
+	/* border matches the fill so size stays stable when transitioning to outline */
+	border: 2px solid var(--hjb-cta-bg);
+	background: var(--hjb-cta-bg);
+	color: var(--hjb-cta-color);
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	text-decoration: none !important; 
+	text-underline-offset: 3px;
+	transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+}
+
+.hj-cta-btn:hover {
+	background: transparent;
+	border-color: var(--hjb-cta-bg);
+	color: var(--hjb-cta-bg);
+	text-decoration: none !important; 
+}
+
+.hj-cta-btn:focus-visible {
+	outline: 3px solid var(--hjb-primary);
+	outline-offset: 3px;
+}
+
+/* ── Minimal theme override ───────────────────────────────────────────────── */
+.hj-bubbles-section.hospitaliti-theme-minimal {
+	--hjb-bg: #f9f7f4; /* minimal-theme section background kept as a design default */
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+/* Tablet — slightly smaller bubbles */
+@media (max-width: 768px) {
+	.hj-bubbles-section {
+		padding: 2.5rem 1rem 3rem;
+	}
+
+	.hj-bubble {
+		width: 178px;
+		height: 178px;
+	}
+
+	.hj-bubble-org {
+		font-size: 0.78rem;
+	}
+
+	.hj-bubble-title {
+		font-size: 0.95rem;
+	}
+
+	.hj-bubbles-wrap {
+		grid-template-columns: repeat(4, 178px);
+		gap: 1rem;
+	}
+}
+
+/* Mobile — smaller still, two-column feel */
+@media (max-width: 480px) {
+	.hj-bubbles-wrap {
+		grid-template-columns: repeat(2, 160px);
+	}
+
+	.hj-bubble {
+		width: 160px;
+		height: 160px;
+		padding: 0.75rem;
+	}
+
+	.hj-bubble-org {
+		font-size: 0.72rem;
+	}
+
+	.hj-bubble-title {
+		font-size: 0.88rem;
+		-webkit-line-clamp: 4;
+	}
+
+	.hj-filter-badges {
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		padding-bottom: 0.5rem;
+	}
+
+	.hj-filter-badge {
+		flex-shrink: 0;
+	}
+}
