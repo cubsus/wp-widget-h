@@ -140,7 +140,7 @@ class AssetManager {
 		// Falls back to the old global bg option, then to the earthy default.
 		$sectionBg = sanitize_hex_color( (string) get_option( 'hospitaliti_bubbles_bg_color', '' ) )
 			?: sanitize_hex_color( (string) get_option( 'hospitaliti_bg_color', '' ) )
-			?: '#f0ede8';
+			?: '#e7e5e1';
 
 		$css  = '.hj-bubbles-section {';
 		$css .= '--hjb-primary: '       . $primary   . '; ';

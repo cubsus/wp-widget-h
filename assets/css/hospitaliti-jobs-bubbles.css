@@ -2,25 +2,69 @@
  * Hospitaliti Jobs — Bubble Listing Widget
  *
  * Styles for the [hospitaliti_jobs_bubbles] shortcode.
- * Layout:
- *   1. Optional section heading
- *   2. Organisation filter badges (horizontal, scrollable on mobile)
- *   3. Flexible wrap grid of circular bubbles
- *   4. Optional CTA block at the bottom
+ *
+ * Measurements mirror careers.francescanafamily.it (checked at 360–1440px):
+ *   Section    full-width band, padding min(104px, 18vw) / 4vw, 1000px column
+ *   Heading    Bodoni Moda 800, fluid 28.4px (360) → 39.4px (1440), lh 1.1
+ *   Badges     30px pills, 14px/20px bold Roboto, 20px colour dot
+ *   Bubbles    4 cols ≥992px, 3 cols ≥768px, 2 cols below; 10px gaps,
+ *              overhanging the column by 10px each side;
+ *              title 18px/1.1 (clamp(12px, 4vw, 22px) at ≤781px)
+ *   Hover      bubble lifts 3px + 0 7px 5px shadow; badge gets a 1px ring;
+ *              CTA button inverts to outline
  *
  * CSS custom properties injected at runtime by AssetManager::buildBubbleCss():
- *   --hjb-primary        Brand primary colour (default #016a6d)
- *   --hjb-bg             Section background (default #f0ede8)
- *   --hjb-heading-color  Heading text colour (default #1a1a1a)
- *   --hjb-badge-bg       Inactive badge background (default #e8e4de)
- *   --hjb-badge-active   Active badge background (default #1a1a1a)
- *   --hjb-badge-color    Badge text colour when active (default #ffffff)
- *   --hjb-cta-bg         CTA section background (default #1a1a1a)
- *   --hjb-cta-color      CTA section text colour (default #ffffff)
- *   --hjb-font           Font stack (default: inherit)
+ *   --hjb-primary        Brand primary colour (default #523d3f)
+ *   --hjb-bg             Section background (default #e7e5e1)
+ *   --hjb-heading-color  Heading / badge text colour (default #523d3f)
+ *   --hjb-badge-active   Active badge background (default #523d3f)
+ *   --hjb-cta-bg         CTA button background (default #523d3f)
+ *   --hjb-cta-color      CTA button text colour (default #fffffa)
+ *
+ * Optional overrides (set in Custom CSS):
+ *   --hjb-font           Body font stack (badges, bubbles, CTA)
+ *   --hjb-heading-font   Section heading font stack
+ *   --hjb-content-width  Inner column width (default 1000px)
  *
  * @package Hospitaliti_Jobs
  */
+
+/* ── Bundled fonts (self-hosted, no Google request) ──────────────────────── */
+@font-face {
+	font-family: "Hospitaliti Roboto";
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url("../fonts/roboto-latin-ext.woff2") format("woff2");
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+	font-family: "Hospitaliti Roboto";
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url("../fonts/roboto-latin.woff2") format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: "Hospitaliti Bodoni Moda";
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url("../fonts/bodoni-moda-800-latin-ext.woff2") format("woff2");
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+	font-family: "Hospitaliti Bodoni Moda";
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url("../fonts/bodoni-moda-800-latin.woff2") format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 /* ── Reset/box model ─────────────────────────────────────────────────────── */
 .hj-bubbles-section *,
@@ -31,158 +75,204 @@
 
 /* ── Section wrapper ─────────────────────────────────────────────────────── */
 .hj-bubbles-section {
-	--hjb-primary:       #016a6d;
-	--hjb-bg:            #f0ede8;
-	--hjb-heading-color: #1a1a1a;
-	--hjb-badge-bg:      rgba(0, 0, 0, 0.08);
+	--hjb-primary:       #523d3f;
+	--hjb-bg:            #e7e5e1;
+	--hjb-heading-color: #523d3f;
 	--hjb-badge-active:  #523d3f;
-	--hjb-badge-color:   #ffffff;
-	--hjb-cta-bg:        #1a1a1a;
-	--hjb-cta-color:     #ffffff;
-	--hjb-font:          inherit;
+	--hjb-cta-bg:        #523d3f;
+	--hjb-cta-color:     #fffffa;
+	--hjb-font:          "Hospitaliti Roboto", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--hjb-heading-font:  "Hospitaliti Bodoni Moda", "Bodoni Moda", "Bodoni 72", Didot, serif;
+	--hjb-content-width: 1000px;
 
+	/* Vertical rhythm — same fluid spacers as the reference page */
+	--hjb-space-lg: min(104px, 18vw);
+	--hjb-space-md: min(48px, 12vw);
+
+	position: relative;
 	background-color: var(--hjb-bg);
-	padding: 3rem 1.5rem 4rem;
-	font-family: inherit;
+	padding: var(--hjb-space-lg) 4vw;
+	font-family: var(--hjb-font);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.4;
+	color: var(--hjb-heading-color);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Full-width band: break out of the theme's narrow content column so the
+   grid gets the same room as on a full-width page. Block themes force auto
+   margins with !important on constrained-layout children, so this selector
+   needs extra specificity (:root) to win. */
+:root .hj-bubbles-section {
+	width: auto !important;
+	max-width: none !important;
+	margin-left: calc(50% - 50vw) !important;
+	margin-right: calc(50% - 50vw) !important;
+}
+
+/* The 100vw band must never cause a horizontal scrollbar */
+body:has(.hj-bubbles-section) {
+	overflow-x: clip;
+}
+
+/* Inner column — heading, badges and CTA share one centred axis */
+.hj-bubbles-section > * {
+	max-width: var(--hjb-content-width);
+	margin-left: auto !important;
+	margin-right: auto !important;
 }
 
 /* ── Section heading ─────────────────────────────────────────────────────── */
 .hj-bubbles-heading-wrap {
+	/* flow-root keeps the heading's 20px bottom margin from collapsing */
+	display: flow-root;
 	text-align: center;
-	margin-bottom: 2rem;
+	margin-top: 0 !important;
+	margin-bottom: var(--hjb-space-md) !important;
 }
 
 .hj-bubbles-heading {
-	font-size: clamp(1.5rem, 3vw, 2.25rem);
-	font-weight: 700;
-	letter-spacing: 0.12em;
+	margin: 0 0 20px;
+	padding: 0;
+	font-family: var(--hjb-heading-font);
+	font-size: min(calc(24.75px + 1.017vw), 39.4px);
+	font-weight: 800;
+	font-style: normal;
+	line-height: 1.1;
+	letter-spacing: normal;
 	text-transform: uppercase;
+	text-align: center;
 	color: var(--hjb-heading-color);
-	margin: 0;
-	line-height: 1.2;
 }
 
 /* ── Filter badges ───────────────────────────────────────────────────────── */
 .hj-filter-badges {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
-	justify-content: center;
-	margin-bottom: 2.5rem;
-	/* allow horizontal scroll on very small screens */
-	overflow-x: auto;
-	-webkit-overflow-scrolling: touch;
-	scrollbar-width: none; /* Firefox */
-	padding: 1px;
-}
-
-.hj-filter-badges::-webkit-scrollbar {
-	display: none;
+	justify-content: flex-start;
+	column-gap: 8px;
+	row-gap: 8.5px;
+	/* the reference filter bar keeps 20px free on the right */
+	padding: 10px 25px 10.5px 5px;
+	margin-top: 0 !important;
+	/* 40px bar margin + 5px cell inset on the reference grid */
+	margin-bottom: 45px !important;
 }
 
 .hj-filter-badge {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
-	gap: 0.35em;
-	padding: 0.4em 1em;
-	border-radius: 9999px;
-	border: 1px solid transparent;
-	background: var(--hjb-badge-bg);
+	justify-content: center;
+	min-width: 60px;
+	height: 30px;
+	margin: 0;
+	padding: 4px 6px;
+	border: 1px solid var(--hjb-primary);
+	border-radius: 500px;
+	background: transparent;
+	box-shadow: none;
 	color: var(--hjb-heading-color);
-	font-size: 0.8rem;
-	font-weight: 500;
-	letter-spacing: 0.04em;
-	cursor: pointer;
+	font-family: var(--hjb-font);
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 20px;
+	letter-spacing: normal;
+	text-transform: none;
+	text-decoration: none;
 	white-space: nowrap;
-	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
-		transform 0.15s ease;
-	font-family: inherit;
+	cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
 }
 
-.hj-filter-badge:hover {
-	background: rgba(0, 0, 0, 0.15);
-	transform: translateY(-1px);
+.hj-filter-badge:hover,
+.hj-filter-badge:focus {
+	background: transparent;
+	color: var(--hjb-heading-color);
+	border-color: var(--hjb-primary);
+	box-shadow: 0 0 0 1px var(--hjb-primary);
+	outline: 0;
 }
 
-.hj-filter-badge.is-active {
+.hj-filter-badge.is-active,
+.hj-filter-badge.is-active:hover,
+.hj-filter-badge.is-active:focus {
 	background: var(--hjb-badge-active);
-	color: var(--hjb-cta-color, #ffffff);
 	border-color: var(--hjb-badge-active);
+	color: #ffffff;
+}
+
+.hj-filter-badge:focus-visible {
+	outline: 2px solid var(--hjb-primary);
+	outline-offset: 2px;
 }
 
 /* Coloured dot — one per org badge, matches the bubble colour */
 .hj-filter-badge-dot {
 	display: inline-block;
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
 	flex-shrink: 0;
-	/* subtle inner shadow to give the dot a little depth */
-	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18);
+	width: 20px;
+	height: 20px;
+	margin-right: 5px;
+	border-radius: 500px;
 }
 
+/* Job counts are not shown in this design */
 .hj-filter-badge-count {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	background: rgba(255, 255, 255, 0.25);
-	border-radius: 9999px;
-	padding: 0 0.4em;
-	min-width: 1.4em;
-	font-size: 0.85em;
-	line-height: 1.5;
-}
-
-.hj-filter-badge:not(.is-active) .hj-filter-badge-count {
-	background: rgba(0, 0, 0, 0.12);
+	display: none;
 }
 
 /* ── Bubble grid ─────────────────────────────────────────────────────────── */
+/* Circles overhang the column by 10px each side, like the reference grid:
+   centred 1020px on wide screens, full width + 20px on narrow ones. */
+.hj-bubbles-section > .hj-bubbles-wrap {
+	max-width: none;
+	margin-left: max(-10px, calc((100% - var(--hjb-content-width) - 20px) / 2)) !important;
+	margin-right: max(-10px, calc((100% - var(--hjb-content-width) - 20px) / 2)) !important;
+}
+
 .hj-bubbles-wrap {
 	display: grid;
-	grid-template-columns: repeat(4, 210px);
-	justify-content: center;
-	align-items: center;
-	gap: 1.25rem;
-	margin: 0 auto;
+	grid-template-columns: repeat(var(--hjb-columns, 4), minmax(0, 1fr));
+	gap: 10px;
+	align-items: start;
+	padding: 0;
 }
 
 /* ── Single bubble ───────────────────────────────────────────────────────── */
 .hj-bubble {
-	/* size */
-	width: 210px;
-	height: 210px;
-	border-radius: 50%;
-
-	/* layout */
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	text-align: center;
-	padding: 1rem;
-	gap: 0.3em;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	margin: 0;
+	padding: 20px;
+	border-radius: 500px;
+	overflow: hidden;
 
-	/* text */
+	font-family: var(--hjb-font);
 	color: #ffffff;
+	text-align: center;
 	text-decoration: none !important;
-
-	/* interaction */
 	cursor: pointer;
-	transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
-	will-change: transform;
 
-	/* prevent text selection on repeated clicks */
-	-webkit-user-select: none;
-	user-select: none;
+	box-shadow: 0 0 0 0 rgba(82, 61, 63, 0.314);
+	transform: translateY(0);
+	transition: transform 0.25s, box-shadow 0.25s;
 }
 
-.hj-bubble:hover {
-	transform: scale(1.07);
-	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
-	filter: brightness(1.06);
-	text-decoration: none;
+.hj-bubble:hover,
+.hj-bubble:focus {
 	color: #ffffff;
+	text-decoration: none;
+	transform: translateY(-3px);
+	box-shadow: 0 7px 5px 0 rgba(82, 61, 63, 0.314);
+	outline: 0;
 }
 
 .hj-bubble:focus-visible {
@@ -190,30 +280,27 @@
 	outline-offset: 4px;
 }
 
-/* Organisation name — small, all-caps */
+/* Organisation name — not shown on the bubble (colour + filter identify it;
+   the link's aria-label still announces it to screen readers). */
 .hj-bubble-org {
-	display: block;
-	font-size: 0.85rem;
-	font-weight: 800;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-	opacity: 1;
-	line-height: 1.3;
-	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+	display: none;
 }
 
-/* Job title — main text */
+/* Job title */
 .hj-bubble-title {
 	display: block;
-	font-size: 1.05rem;
-	font-weight: 700;
-	line-height: 1.35;
-	text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
-	/* clamp to ~4 lines before truncating */
-	display: -webkit-box;
-	-webkit-line-clamp: 5;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
+	max-width: 100%;
+	margin: 0;
+	font-family: var(--hjb-font);
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.1;
+	letter-spacing: -0.2px;
+	text-transform: uppercase;
+	text-align: center;
+	color: #ffffff;
+	text-shadow: none;
+	overflow-wrap: break-word;
 }
 
 /* Hidden state — set by JS when a filter badge is active */
@@ -225,50 +312,60 @@
 .hj-bubbles-empty {
 	grid-column: 1 / -1 !important;
 	width: 100%;
+	margin: 0;
+	padding: 3rem 0;
 	text-align: center;
+	font-size: 16px;
 	color: var(--hjb-heading-color);
 	opacity: 0.6;
-	font-size: 0.95rem;
-	padding: 3rem 0;
-	margin: 0;
 }
 
 /* ── CTA section ─────────────────────────────────────────────────────────── */
 .hj-cta-section {
-	margin-top: 3rem;
+	/* spacer + the 5px cell inset below the last row on the reference grid */
+	margin-top: calc(var(--hjb-space-lg) + 5px) !important;
+	margin-bottom: 0 !important;
 	text-align: center;
 }
 
 .hj-cta-label {
-	font-size: 0.9rem;
+	margin: 0 0 20px;
+	font-family: var(--hjb-font);
+	font-size: min(calc(20.22px + 1.185vw), 37.3px);
+	font-weight: 700;
+	line-height: 1.1;
+	letter-spacing: normal;
+	text-align: center;
 	color: var(--hjb-heading-color);
-	opacity: 0.7;
-	margin: 0 0 0.9rem;
-	letter-spacing: 0.02em;
+	opacity: 1;
 }
 
 .hj-cta-btn {
 	display: inline-block;
-	padding: 0.65em 2em;
-	border-radius: 4px;
-	/* border matches the fill so size stays stable when transitioning to outline */
+	margin: 0;
+	padding: min(calc(11.89px + 0.0567vw), 12.71px) min(calc(21.77px + 0.1133vw), 23.4px);
 	border: 2px solid var(--hjb-cta-bg);
+	border-radius: 0;
 	background: var(--hjb-cta-bg);
 	color: var(--hjb-cta-color);
-	font-size: 0.8rem;
-	font-weight: 600;
-	letter-spacing: 0.08em;
+	font-family: var(--hjb-font);
+	font-size: min(calc(14.82px + 0.0856vw), 16.06px);
+	font-weight: 400;
+	line-height: 1.4;
+	letter-spacing: normal;
 	text-transform: uppercase;
-	text-decoration: none !important; 
-	text-underline-offset: 3px;
-	transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+	text-decoration: none !important;
+	vertical-align: top;
+	cursor: pointer;
+	transition: 0.25s;
 }
 
-.hj-cta-btn:hover {
+.hj-cta-btn:hover,
+.hj-cta-btn:focus {
 	background: transparent;
 	border-color: var(--hjb-cta-bg);
 	color: var(--hjb-cta-bg);
-	text-decoration: none !important; 
+	text-decoration: none !important;
 }
 
 .hj-cta-btn:focus-visible {
@@ -276,66 +373,23 @@
 	outline-offset: 3px;
 }
 
-/* ── Minimal theme override ───────────────────────────────────────────────── */
-.hj-bubbles-section.hospitaliti-theme-minimal {
-	--hjb-bg: #f9f7f4; /* minimal-theme section background kept as a design default */
-}
-
 /* ── Responsive ──────────────────────────────────────────────────────────── */
+/* Same breakpoints as the reference grid (Bootstrap md / sm / xs). */
 
-/* Tablet — slightly smaller bubbles */
-@media (max-width: 768px) {
+@media (max-width: 991px) {
 	.hj-bubbles-section {
-		padding: 2.5rem 1rem 3rem;
-	}
-
-	.hj-bubble {
-		width: 178px;
-		height: 178px;
-	}
-
-	.hj-bubble-org {
-		font-size: 0.78rem;
-	}
-
-	.hj-bubble-title {
-		font-size: 0.95rem;
-	}
-
-	.hj-bubbles-wrap {
-		grid-template-columns: repeat(4, 178px);
-		gap: 1rem;
+		--hjb-columns: 3;
 	}
 }
 
-/* Mobile — smaller still, two-column feel */
-@media (max-width: 480px) {
-	.hj-bubbles-wrap {
-		grid-template-columns: repeat(2, 160px);
-	}
-
-	.hj-bubble {
-		width: 160px;
-		height: 160px;
-		padding: 0.75rem;
-	}
-
-	.hj-bubble-org {
-		font-size: 0.72rem;
-	}
-
+@media (max-width: 781px) {
 	.hj-bubble-title {
-		font-size: 0.88rem;
-		-webkit-line-clamp: 4;
+		font-size: clamp(12px, 4vw, 22px);
 	}
+}
 
-	.hj-filter-badges {
-		flex-wrap: nowrap;
-		justify-content: flex-start;
-		padding-bottom: 0.5rem;
-	}
-
-	.hj-filter-badge {
-		flex-shrink: 0;
+@media (max-width: 767px) {
+	.hj-bubbles-section {
+		--hjb-columns: 2;
 	}
 }

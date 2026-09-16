@@ -32,12 +32,12 @@ class JobsBubblesShortcode {
 
 	// ── Fallback palette (used when DB options are not yet seeded) ──────────
 	private const COLOUR_PALETTE_DEFAULTS = [
-		'#7a8c5a', // sage green
-		'#b8a898', // warm beige
-		'#4a7060', // dark teal-green
-		'#8b4040', // deep crimson
-		'#6b8060', // muted forest
-		'#9a7850', // warm brown
+		'#143f2b', // deep green
+		'#9ca998', // sage grey
+		'#c6baab', // warm beige
+		'#9baa65', // olive green
+		'#da291c', // signal red
+		'#523d3f', // brand brown
 	];
 
 	/** @return string[] */

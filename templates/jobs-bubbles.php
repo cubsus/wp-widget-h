@@ -61,16 +61,18 @@ $totalJobs = count( $jobs );
 		<button class="hj-filter-badge is-active" type="button"
 			data-org="all"
 			aria-pressed="true">
-			<?php
-			printf(
-				/* translators: %d number of total jobs */
-				esc_html__( 'All %d', 'hospitaliti-jobs' ),
-				$totalJobs
-			);
-			?>
+			<?php esc_html_e( 'All', 'hospitaliti-jobs' ); ?>
+			<span class="hj-filter-badge-count">
+				<?php echo esc_html( $totalJobs ); ?>
+			</span>
 		</button>
 
-		<?php foreach ( $orgColourMap as $orgName => $colour ) : ?>
+		<?php
+		// Badges are listed alphabetically; colours keep their first-appearance order.
+		$_badge_orgs = $orgColourMap;
+		uksort( $_badge_orgs, 'strnatcasecmp' );
+		foreach ( $_badge_orgs as $orgName => $colour ) :
+		?>
 			<button class="hj-filter-badge" type="button"
 				data-org="<?php echo esc_attr( $orgName ); ?>"
 				aria-pressed="false">
@@ -101,7 +103,7 @@ $totalJobs = count( $jobs );
 				? $job->organization
 				: (array) ( $job->organization ?? [] );
 			$_org_name   = $_org_data['name'] ?? __( 'Other', 'hospitaliti-jobs' );
-			$_org_colour = $orgColourMap[ $_org_name ] ?? ( $palette[0] ?? '#7a8c5a' );
+			$_org_colour = $orgColourMap[ $_org_name ] ?? ( $palette[0] ?? '#143f2b' );
 				include __DIR__ . '/job-bubble.php';
 			endforeach; ?>
 		<?php endif; ?>

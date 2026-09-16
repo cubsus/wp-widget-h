@@ -3,7 +3,7 @@
  * Plugin Name:       Hospitaliti Jobs Widget
  * Plugin URI:        https://github.com/asadAli0051/hospitaliti-jobs-widget
  * Description:       Display live job listings from the Hospitaliti recruitment platform on any WordPress site via a widget, shortcode, or AJAX-powered pagination.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Author:            Asad Ali
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-define( 'HOSPITALITI_JOBS_VERSION',          '2.0.0' );
+define( 'HOSPITALITI_JOBS_VERSION',          '2.0.1' );
 define( 'HOSPITALITI_JOBS_PLUGIN_DIR',       plugin_dir_path( __FILE__ ) );
 define( 'HOSPITALITI_JOBS_PLUGIN_URL',       plugin_dir_url( __FILE__ ) );
 define( 'HOSPITALITI_JOBS_DEFAULT_API_URL',  'https://app.hospitaliti.io' );

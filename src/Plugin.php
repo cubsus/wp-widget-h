@@ -107,7 +107,7 @@ final class Plugin {
 		add_option( 'hospitaliti_bubbles_cta_text',    'Submit your application' );
 		add_option( 'hospitaliti_bubbles_cta_url',     '' );
 		add_option( 'hospitaliti_bubbles_primary_color', $oldPrimary ?: '#523d3f' );
-		add_option( 'hospitaliti_bubbles_bg_color',    '#f0ede8' );
+		add_option( 'hospitaliti_bubbles_bg_color',    '#e7e5e1' );
 		// Migration: consolidate legacy per-slot options into a single array.
 		if ( false !== get_option( 'hospitaliti_bubbles_color_1' ) ) {
 			$_migrated = [];
@@ -118,7 +118,7 @@ final class Plugin {
 			}
 			if ( $_migrated ) { update_option( 'hospitaliti_bubbles_colors', $_migrated ); }
 		}
-		add_option( 'hospitaliti_bubbles_colors', [ '#7a8c5a', '#b8a898', '#4a7060', '#8b4040', '#6b8060', '#9a7850' ] );
+		add_option( 'hospitaliti_bubbles_colors', [ '#143f2b', '#9ca998', '#c6baab', '#9baa65', '#da291c', '#523d3f' ] );
 		add_option( 'hospitaliti_bubbles_back_url',    '' );
 		add_option( 'hospitaliti_bubbles_custom_css',  '' );
 

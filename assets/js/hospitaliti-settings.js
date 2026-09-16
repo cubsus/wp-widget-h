@@ -37,7 +37,7 @@
 
         // ── Dynamic palette editor ────────────────────────────────────────
         $('#hj-add-color').on('click', function () {
-            var $input = $('<input type="text" name="hospitaliti_bubbles_colors[]" value="#7a8c5a" />');
+            var $input = $('<input type="text" name="hospitaliti_bubbles_colors[]" value="#143f2b" />');
             var $btn   = $('<button type="button" class="button hj-remove-color" style="margin-top:4px;display:block;width:100%">Remove</button>');
             var $item  = $('<div class="hj-palette-item" style="text-align:center"></div>').append($input).append($btn);
             $('#hj-palette-wrap').append($item);

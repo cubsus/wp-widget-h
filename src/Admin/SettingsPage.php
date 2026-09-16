@@ -98,11 +98,11 @@ class SettingsPage {
 		register_setting( $bubbles, 'hospitaliti_bubbles_cta_text',    [ 'sanitize_callback' => 'sanitize_text_field', 'default' => 'Submit your application' ] );
 		register_setting( $bubbles, 'hospitaliti_bubbles_cta_url',     [ 'sanitize_callback' => 'esc_url_raw',         'default' => '' ] );
 		register_setting( $bubbles, 'hospitaliti_bubbles_primary_color', [ 'sanitize_callback' => 'sanitize_hex_color', 'default' => '#523d3f' ] );
-		register_setting( $bubbles, 'hospitaliti_bubbles_bg_color',    [ 'sanitize_callback' => 'sanitize_hex_color', 'default' => '#f0ede8' ] );
+		register_setting( $bubbles, 'hospitaliti_bubbles_bg_color',    [ 'sanitize_callback' => 'sanitize_hex_color', 'default' => '#e7e5e1' ] );
 		register_setting( $bubbles, 'hospitaliti_bubbles_colors', [
 			'sanitize_callback' => static function( $val ) {
 				$colors = array_values( array_filter( array_map( 'sanitize_hex_color', (array) $val ) ) );
-				return $colors ?: [ '#7a8c5a' ];
+				return $colors ?: [ '#143f2b' ];
 			},
 		] );
 		register_setting( $bubbles, 'hospitaliti_bubbles_back_url',    [ 'sanitize_callback' => 'esc_url_raw',        'default' => '' ] );
@@ -444,7 +444,7 @@ class SettingsPage {
 				<tr>
 					<th><?php esc_html_e( 'Section Background Color', 'hospitaliti-jobs' ); ?></th>
 					<td><input type="text" name="hospitaliti_bubbles_bg_color"
-						value="<?php echo esc_attr( get_option( 'hospitaliti_bubbles_bg_color', '#f0ede8' ) ); ?>"
+						value="<?php echo esc_attr( get_option( 'hospitaliti_bubbles_bg_color', '#e7e5e1' ) ); ?>"
 						class="hospitaliti-color-picker" /></td>
 				</tr>
 				<tr>
@@ -452,7 +452,7 @@ class SettingsPage {
 					<td>
 						<p class="description" style="margin-bottom:8px"><?php esc_html_e( 'Colors assigned to organisations in order (cycles when there are more orgs than colors).', 'hospitaliti-jobs' ); ?></p>
 					<?php
-					$_pal_defaults = [ '#7a8c5a', '#b8a898', '#4a7060', '#8b4040', '#6b8060', '#9a7850' ];
+					$_pal_defaults = [ '#143f2b', '#9ca998', '#c6baab', '#9baa65', '#da291c', '#523d3f' ];
 					$_pal_saved    = (array) get_option( 'hospitaliti_bubbles_colors', $_pal_defaults );
 					if ( empty( $_pal_saved ) ) { $_pal_saved = $_pal_defaults; }
 					?>
