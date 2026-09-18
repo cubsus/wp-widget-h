@@ -20,6 +20,8 @@
 
 namespace Hospitaliti\Jobs\Shortcode;
 
+use Hospitaliti\Jobs\Hosco\HoscoJobMapper;
+use Hospitaliti\Jobs\Hosco\HoscoJobRepository;
 use Hospitaliti\Jobs\Job\JobService;
 use Hospitaliti\Jobs\UI\AssetManager;
 
@@ -27,8 +29,10 @@ defined( 'ABSPATH' ) || exit;
 
 class JobsBubblesShortcode {
 
-	private JobService   $service;
-	private AssetManager $assets;
+	private JobService          $service;
+	private HoscoJobRepository  $hoscoRepo;
+	private HoscoJobMapper      $hoscoMapper;
+	private AssetManager        $assets;
 
 	// ── Fallback palette (used when DB options are not yet seeded) ──────────
 	private const COLOUR_PALETTE_DEFAULTS = [
@@ -46,9 +50,11 @@ class JobsBubblesShortcode {
 		return $palette ?: self::COLOUR_PALETTE_DEFAULTS;
 	}
 
-	public function __construct( JobService $service, AssetManager $assets ) {
-		$this->service = $service;
-		$this->assets  = $assets;
+	public function __construct( JobService $service, HoscoJobRepository $hoscoRepo, HoscoJobMapper $hoscoMapper, AssetManager $assets ) {
+		$this->service     = $service;
+		$this->hoscoRepo   = $hoscoRepo;
+		$this->hoscoMapper = $hoscoMapper;
+		$this->assets      = $assets;
 	}
 
 	/**
@@ -92,7 +98,7 @@ class JobsBubblesShortcode {
 		$ctaUrl    = esc_url_raw( $atts['cta_url'] ?: get_privacy_policy_url() ?: '#' );
 		$theme     = $this->resolveTheme();
 
-		// ── API call ─────────────────────────────────────────────────────────
+		// ── Hospitaliti API call ─────────────────────────────────────────────
 		$encid  = (string) get_option( 'hospitaliti_company_encid', '' );
 		$apiUrl = get_option( 'hospitaliti_jobs_api_url', HOSPITALITI_JOBS_DEFAULT_API_URL );
 		$data   = $this->service->getJobsPage(
@@ -112,7 +118,26 @@ class JobsBubblesShortcode {
 			return ob_get_clean();
 		}
 
-		$jobs = $data['data'] ?? [];
+		$hospJobs = $data['data'] ?? [];
+		foreach ( $hospJobs as $j ) { $j->_source = 'hospitaliti'; }
+
+		// ── Hosco API call (optional, gated on settings) ─────────────────────
+		$hoscoGroupId = trim( (string) get_option( 'hosco_group_id', '' ) );
+		$hoscoJobs    = [];
+		if ( $hoscoGroupId !== '' && get_option( 'hosco_enabled', 0 ) ) {
+			$locale      = sanitize_key( (string) get_option( 'hosco_locale', 'en' ) );
+			$hoscoResult = $this->hoscoRepo->search(
+				[ 'limit' => $count, 'owner' => $hoscoGroupId ],
+				1,
+				$locale
+			);
+			if ( ! is_wp_error( $hoscoResult ) ) {
+				$hoscoJobs = $this->hoscoMapper->mapCollection( $hoscoResult['results'] ?? [], $locale );
+				foreach ( $hoscoJobs as $j ) { $j->_source = 'hosco'; }
+			}
+		}
+
+		$jobs = array_merge( $hospJobs, $hoscoJobs );
 
 		// ── Build organisation → colour map ───────────────────────────────────
 		// Walk through jobs in order; first time we see an org name it gets the

@@ -35,6 +35,29 @@
             });
         });
 
+        // ── Hosco connection test ─────────────────────────────────────────
+        $(document).on('click', '#hj-hosco-test-connection', function () {
+            var $btn    = $(this);
+            var $result = $('#hj-hosco-test-result');
+            $btn.prop('disabled', true).text('Testing\u2026');
+            $result.hide();
+            $.post(hospitalitiAdmin.ajaxUrl, {
+                action:      'hosco_test_connection',
+                _ajax_nonce: hospitalitiAdmin.hoscoNonce
+            })
+            .done(function (resp) {
+                $result.text(resp.data.message)
+                       .css('color', resp.success ? '#2a7a2a' : '#cc1818')
+                       .show();
+            })
+            .fail(function () {
+                $result.text('Request failed — check your browser console.').css('color', '#cc1818').show();
+            })
+            .always(function () {
+                $btn.prop('disabled', false).text('Test Hosco Connection');
+            });
+        });
+
         // ── Dynamic palette editor ────────────────────────────────────────
         $('#hj-add-color').on('click', function () {
             var $input = $('<input type="text" name="hospitaliti_bubbles_colors[]" value="#143f2b" />');

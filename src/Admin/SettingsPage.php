@@ -24,13 +24,14 @@ defined( 'ABSPATH' ) || exit;
 class SettingsPage {
 
 	/** Valid tab slugs */
-	private const TABS = [ 'api', 'listing', 'bubbles', 'detail', 'tools' ];
+	private const TABS = [ 'api', 'hosco', 'listing', 'bubbles', 'detail', 'tools' ];
 
 	public function register(): void {
 		add_action( 'admin_menu',                          [ $this, 'addPage' ] );
 		add_action( 'admin_init',                          [ $this, 'registerSettings' ] );
 		add_action( 'admin_enqueue_scripts',               [ $this, 'enqueueColorPicker' ] );
 		add_action( 'wp_ajax_hospitaliti_test_connection', [ $this, 'ajaxTestConnection' ] );
+		add_action( 'wp_ajax_hosco_test_connection',       [ $this, 'ajaxHoscoTestConnection' ] );
 	}
 
 	/* ── Menu ────────────────────────────────────────────────────────────── */
@@ -58,8 +59,9 @@ class SettingsPage {
 			true
 		);
 		wp_localize_script( 'hospitaliti-settings', 'hospitalitiAdmin', [
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-			'nonce'   => wp_create_nonce( 'hospitaliti_test_api' ),
+			'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+			'nonce'      => wp_create_nonce( 'hospitaliti_test_api' ),
+			'hoscoNonce' => wp_create_nonce( 'hosco_test_api' ),
 		] );
 	}
 
@@ -108,7 +110,16 @@ class SettingsPage {
 		register_setting( $bubbles, 'hospitaliti_bubbles_back_url',    [ 'sanitize_callback' => 'esc_url_raw',        'default' => '' ] );
 		register_setting( $bubbles, 'hospitaliti_bubbles_custom_css',  [ 'sanitize_callback' => 'wp_strip_all_tags',  'default' => '' ] );
 
-		// ── GROUP 4: Job Detail Page ──────────────────────────────────────
+		// ── GROUP 4: Hosco Jobs ───────────────────────────────────────────
+		$hosco = 'hosco';
+		register_setting( $hosco, 'hosco_base_url',   [ 'sanitize_callback' => 'esc_url_raw',                                                                    'default' => 'https://api-e.hosco.com' ] );
+		register_setting( $hosco, 'hosco_api_secret', [ 'sanitize_callback' => 'sanitize_text_field',                                                             'default' => '' ] );
+		register_setting( $hosco, 'hosco_group_id',   [ 'sanitize_callback' => 'sanitize_text_field',                                                             'default' => '' ] );
+		register_setting( $hosco, 'hosco_per_page',   [ 'sanitize_callback' => static fn( $v ) => max( 1, min( (int) $v, 50 ) ),                                 'default' => 10 ] );
+		register_setting( $hosco, 'hosco_locale',     [ 'sanitize_callback' => static fn( $v ) => in_array( $v, [ 'en', 'fr', 'es', 'it' ], true ) ? $v : 'en', 'default' => 'en' ] );
+		register_setting( $hosco, 'hosco_enabled',    [ 'sanitize_callback' => static fn( $v ) => $v ? 1 : 0,                                                    'default' => 0 ] );
+
+		// ── GROUP 5: Job Detail Page ──────────────────────────────────────
 		$detail = 'hospitaliti_detail';
 		register_setting( $detail, 'hospitaliti_detail_theme',         [ 'sanitize_callback' => static fn($v) => in_array( $v, [ 'default', 'minimal' ], true ) ? $v : 'default', 'default' => 'default' ] );
 		register_setting( $detail, 'hospitaliti_detail_primary_color', [ 'sanitize_callback' => 'sanitize_hex_color', 'default' => '#523d3f' ] );
@@ -153,6 +164,7 @@ class SettingsPage {
 				<?php
 		$tabs = [
 				'api'     => __( 'API & Connection',   'hospitaliti-jobs' ),
+				'hosco'   => __( 'Hosco Jobs',          'hospitaliti-jobs' ),
 				'listing' => __( 'Job Listing',         'hospitaliti-jobs' ),
 				'bubbles' => __( 'Bubble Listing',      'hospitaliti-jobs' ),
 				'detail'  => __( 'Job Detail Page',     'hospitaliti-jobs' ),
@@ -172,6 +184,7 @@ class SettingsPage {
 			<?php
 			switch ( $currentTab ) {
 				case 'api':     $this->renderTabApi();     break;
+				case 'hosco':   $this->renderTabHosco();   break;
 				case 'listing': $this->renderTabListing(); break;
 				case 'bubbles': $this->renderTabBubbles(); break;
 				case 'detail':  $this->renderTabDetail();  break;
@@ -611,6 +624,23 @@ class SettingsPage {
 				</tbody></table>
 			</div>
 
+		<!-- Card 3 — Hosco listing -->
+		<div class="hj-sc-card">
+			<h3><?php esc_html_e( 'Hosco Job Listing', 'hospitaliti-jobs' ); ?></h3>
+			<p><?php esc_html_e( 'Public jobs from hosco.com, displayed using the same card layout. Links open hosco.com in a new tab.', 'hospitaliti-jobs' ); ?></p>
+			<div class="hj-sc-copy-row">
+				<span class="hj-sc-code">[hosco_jobs]</span>
+				<button type="button" class="button hj-sc-copy-btn" data-target="[hosco_jobs]"><?php esc_html_e( 'Copy', 'hospitaliti-jobs' ); ?></button>
+			</div>
+			<table class="hj-sc-table"><thead><tr><th><?php esc_html_e( 'Attribute', 'hospitaliti-jobs' ); ?></th><th><?php esc_html_e( 'Default', 'hospitaliti-jobs' ); ?></th><th><?php esc_html_e( 'Description', 'hospitaliti-jobs' ); ?></th></tr></thead><tbody>
+				<tr><td><code>title</code></td><td><?php esc_html_e( '(empty)', 'hospitaliti-jobs' ); ?></td><td><?php esc_html_e( 'Optional section heading', 'hospitaliti-jobs' ); ?></td></tr>
+				<tr><td><code>count</code></td><td><?php echo esc_html( get_option( 'hosco_per_page', 10 ) ); ?></td><td><?php esc_html_e( 'Jobs per page (max 50)', 'hospitaliti-jobs' ); ?></td></tr>
+				<tr><td><code>show_salary</code></td><td>true</td><td><?php esc_html_e( 'Show salary badge', 'hospitaliti-jobs' ); ?></td></tr>
+				<tr><td><code>show_type</code></td><td>true</td><td><?php esc_html_e( 'Show employment-type badge', 'hospitaliti-jobs' ); ?></td></tr>
+				<tr><td><code>show_date</code></td><td>true</td><td><?php esc_html_e( 'Show posted-date badge', 'hospitaliti-jobs' ); ?></td></tr>
+			</tbody></table>
+		</div>
+
 	</div><!-- .hj-sc-cards -->
 
 		<hr />
@@ -650,7 +680,154 @@ class SettingsPage {
 		<?php
 	}
 
+	/* ── Tab: Hosco Jobs ─────────────────────────────────────────────────── */
+
+	private function renderTabHosco(): void {
+		?>
+		<form method="post" action="options.php">
+			<?php settings_fields( 'hosco' ); ?>
+
+			<h2><?php esc_html_e( 'Hosco Jobs', 'hospitaliti-jobs' ); ?></h2>
+			<p>
+				<?php esc_html_e( 'Settings for the [hosco_jobs] shortcode, which displays public job listings fetched from hosco.com.', 'hospitaliti-jobs' ); ?>
+				<?php esc_html_e( 'Job cards link directly to hosco.com and open in a new tab.', 'hospitaliti-jobs' ); ?>
+			</p>
+
+			<h3><?php esc_html_e( 'Connection', 'hospitaliti-jobs' ); ?></h3>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th><label for="hosco_base_url"><?php esc_html_e( 'Hosco API Base URL', 'hospitaliti-jobs' ); ?></label></th>
+					<td>
+						<input type="url" id="hosco_base_url" name="hosco_base_url"
+							value="<?php echo esc_attr( get_option( 'hosco_base_url', 'https://api-e.hosco.com' ) ); ?>"
+							class="regular-text" placeholder="https://api-e.hosco.com" />
+						<p class="description"><?php esc_html_e( 'Base URL of the Hosco external API (no trailing slash). Use https://api-e.hosco.dev for staging.', 'hospitaliti-jobs' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="hosco_api_secret"><?php esc_html_e( 'API Secret Key', 'hospitaliti-jobs' ); ?></label></th>
+					<td>
+						<input type="password" id="hosco_api_secret" name="hosco_api_secret"
+							value="<?php echo esc_attr( get_option( 'hosco_api_secret', '' ) ); ?>"
+							class="regular-text" autocomplete="new-password" />
+						<p class="description"><?php esc_html_e( 'X-Auth-Secret key provided by Hosco. Sent with every API request.', 'hospitaliti-jobs' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="hosco_group_id"><?php esc_html_e( 'Company Owner Slug', 'hospitaliti-jobs' ); ?></label></th>
+					<td>
+						<input type="text" id="hosco_group_id" name="hosco_group_id"
+							value="<?php echo esc_attr( get_option( 'hosco_group_id', '' ) ); ?>"
+							class="regular-text" placeholder="e.g. the-social-hub" />
+						<p class="description"><?php esc_html_e( 'Company slug to scope job results to a single owner. Leave empty to fetch all jobs visible to this API key.', 'hospitaliti-jobs' ); ?></p>
+					</td>
+				</tr>
+			</table>
+
+			<h3><?php esc_html_e( 'Display', 'hospitaliti-jobs' ); ?></h3>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th><?php esc_html_e( 'Fetch Jobs', 'hospitaliti-jobs' ); ?></th>
+					<td>
+						<label>
+							<input type="checkbox" name="hosco_enabled" value="1"
+								<?php checked( 1, get_option( 'hosco_enabled', 0 ) ); ?> />
+							<?php esc_html_e( 'Enable fetching jobs from Hosco API', 'hospitaliti-jobs' ); ?>
+						</label>
+						<p class="description"><?php esc_html_e( 'When checked, the [hosco_jobs] shortcode will fetch and display jobs. Also enables Hosco jobs in the Bubble Listing when a Company Owner Slug is set.', 'hospitaliti-jobs' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="hosco_per_page"><?php esc_html_e( 'Jobs Per Page', 'hospitaliti-jobs' ); ?></label></th>
+					<td>
+						<input type="number" id="hosco_per_page" name="hosco_per_page"
+							value="<?php echo esc_attr( get_option( 'hosco_per_page', 10 ) ); ?>"
+							min="1" max="50" class="small-text" />
+						<p class="description"><?php esc_html_e( 'Number of hosco jobs to show per page (1–50).', 'hospitaliti-jobs' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="hosco_locale"><?php esc_html_e( 'Language', 'hospitaliti-jobs' ); ?></label></th>
+					<td>
+						<select id="hosco_locale" name="hosco_locale">
+							<option value="en" <?php selected( get_option( 'hosco_locale', 'en' ), 'en' ); ?>><?php esc_html_e( 'English', 'hospitaliti-jobs' ); ?></option>
+							<option value="fr" <?php selected( get_option( 'hosco_locale', 'en' ), 'fr' ); ?>><?php esc_html_e( 'French', 'hospitaliti-jobs' ); ?></option>
+							<option value="es" <?php selected( get_option( 'hosco_locale', 'en' ), 'es' ); ?>><?php esc_html_e( 'Spanish', 'hospitaliti-jobs' ); ?></option>
+							<option value="it" <?php selected( get_option( 'hosco_locale', 'en' ), 'it' ); ?>><?php esc_html_e( 'Italian', 'hospitaliti-jobs' ); ?></option>
+						</select>
+						<p class="description"><?php esc_html_e( 'Locale sent to the hosco.com search API and used for hosco.com job detail page links.', 'hospitaliti-jobs' ); ?></p>
+					</td>
+				</tr>
+			</table>
+			<?php submit_button( __( 'Save Hosco Settings', 'hospitaliti-jobs' ) ); ?>
+		</form>
+
+		<hr style="margin:24px 0 20px" />
+		<h3 style="margin:0 0 6px"><?php esc_html_e( 'Connection Test', 'hospitaliti-jobs' ); ?></h3>
+		<p class="description" style="margin-bottom:10px"><?php esc_html_e( 'Verify the current Hosco API URL and Secret Key can reach the hosco.com API.', 'hospitaliti-jobs' ); ?></p>
+		<button type="button" id="hj-hosco-test-connection" class="button button-secondary">
+			<?php esc_html_e( 'Test Hosco Connection', 'hospitaliti-jobs' ); ?>
+		</button>
+		<span id="hj-hosco-test-result" style="margin-left:12px;line-height:30px;display:none"></span>
+		<?php
+	}
+
 	/* ── API connection test ─────────────────────────────────────────────── */
+
+	public function ajaxHoscoTestConnection(): void {
+		check_ajax_referer( 'hosco_test_api' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Unauthorized.', 'hospitaliti-jobs' ) ] );
+		}
+		$result = $this->testHoscoConnection();
+		$result['ok'] ? wp_send_json_success( $result ) : wp_send_json_error( $result );
+	}
+
+	private function testHoscoConnection(): array {
+		$base   = rtrim( (string) get_option( 'hosco_base_url', 'https://api-e.hosco.com' ), '/' );
+		$secret = trim( (string) get_option( 'hosco_api_secret', '' ) );
+
+		if ( $base === '' ) {
+			return [ 'ok' => false, 'message' => __( 'No Hosco URL configured.', 'hospitaliti-jobs' ) ];
+		}
+
+		if ( $secret === '' ) {
+			return [ 'ok' => false, 'message' => __( 'No API Secret Key configured. Please set it in the Hosco Jobs tab.', 'hospitaliti-jobs' ) ];
+		}
+
+		$body = wp_json_encode( [ 'filters' => [ 'limit' => 1 ], 'page' => 1 ] );
+
+		$response = wp_remote_post( $base . '/jobs/search', [
+			'headers' => [
+				'Content-Type'    => 'application/json',
+				'Accept'          => 'application/json',
+				'Accept-Language' => 'en',
+				'X-Auth-Secret'   => $secret,
+			],
+			'body'    => $body,
+			'timeout' => 15,
+		] );
+
+		if ( is_wp_error( $response ) ) {
+			return [ 'ok' => false, 'message' => $response->get_error_message() ];
+		}
+
+		$status = (int) wp_remote_retrieve_response_code( $response );
+
+		if ( 200 !== $status ) {
+			return [ 'ok' => false, 'message' => sprintf( __( 'Hosco API returned HTTP %d.', 'hospitaliti-jobs' ), $status ) ];
+		}
+
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( ! is_array( $data ) || ! isset( $data['total'] ) ) {
+			return [ 'ok' => false, 'message' => __( 'Hosco API responded but returned unexpected data.', 'hospitaliti-jobs' ) ];
+		}
+
+		return [ 'ok' => true, 'message' => __( 'Connection successful.', 'hospitaliti-jobs' ) ];
+	}
+
+	/* ── Hospitaliti API connection test ──────────────────────────────────── */
 
 	public function ajaxTestConnection(): void {
 		check_ajax_referer( 'hospitaliti_test_api' );

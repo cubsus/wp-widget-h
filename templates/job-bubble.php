@@ -24,16 +24,21 @@ defined( 'ABSPATH' ) || exit;
 // Trim leading dashes the API sometimes returns.
 $_bubble_slug = trim( $job->slug ?? '', '-' );
 
-$_bubble_external = empty( $careers_slug );
-$_bubble_url      = $_bubble_external
-	? $api_base_url . '/job/' . rawurlencode( $_bubble_slug )
-	: home_url( '/' . rawurlencode( $_bubble_slug ) . '/' );
 
-// If a bubble-specific "Back to Careers" URL is configured, embed it as a
-// query parameter so the detail page can use it for the back link.
-$_bubbles_back = $bubbles_back_url ?? '';
-if ( ! $_bubble_external && $_bubbles_back ) {
-	$_bubble_url = add_query_arg( 'hj_back', rawurlencode( $_bubbles_back ), $_bubble_url );
+if ( ( $job->_source ?? '' ) === 'hosco' ) {
+	$_bubble_external = true;
+	$_bubble_url      = $job->apply_link ?? 'https://www.hosco.com';
+} else {
+	$_bubble_external = empty( $careers_slug );
+	$_bubble_url      = $_bubble_external
+		? $api_base_url . '/job/' . rawurlencode( $_bubble_slug )
+		: home_url( '/' . rawurlencode( $_bubble_slug ) . '/' );
+
+	
+	$_bubbles_back = $bubbles_back_url ?? '';
+	if ( ! $_bubble_external && $_bubbles_back ) {
+		$_bubble_url = add_query_arg( 'hj_back', rawurlencode( $_bubbles_back ), $_bubble_url );
+	}
 }
 
 // ── Inline style — only the background colour ─────────────────────────────────

@@ -15,9 +15,13 @@ namespace Hospitaliti\Jobs;
 use Hospitaliti\Jobs\Admin\SettingsPage;
 use Hospitaliti\Jobs\Ajax\LoadMoreAjax;
 use Hospitaliti\Jobs\Api\JobApiClient;
+use Hospitaliti\Jobs\Hosco\HoscoApiClient;
+use Hospitaliti\Jobs\Hosco\HoscoJobMapper;
+use Hospitaliti\Jobs\Hosco\HoscoJobRepository;
 use Hospitaliti\Jobs\Job\JobMapper;
 use Hospitaliti\Jobs\Job\JobRepository;
 use Hospitaliti\Jobs\Job\JobService;
+use Hospitaliti\Jobs\Shortcode\HoscoJobsShortcode;
 use Hospitaliti\Jobs\Shortcode\JobsShortcode;
 use Hospitaliti\Jobs\Shortcode\JobsBubblesShortcode;
 use Hospitaliti\Jobs\Theme\ThemeAdapterInterface;
@@ -131,6 +135,14 @@ final class Plugin {
 		add_option( 'hospitaliti_detail_back_url',      '' ); // empty = use careers page URL
 		add_option( 'hospitaliti_detail_custom_css',    '' );
 
+		// ── Hosco Jobs options ─────────────────────────────────────────────
+		add_option( 'hosco_base_url',   'https://api-e.hosco.com' );
+		add_option( 'hosco_api_secret', '' );
+		add_option( 'hosco_group_id',   '' );
+		add_option( 'hosco_per_page',   10 );
+		add_option( 'hosco_locale',     'en' );
+		add_option( 'hosco_enabled',    0 );
+
 		self::registerRewriteRules();
 		flush_rewrite_rules();
 	}
@@ -201,7 +213,17 @@ final class Plugin {
 		$shortcode = new JobsShortcode( $this->service, $this->assetManager );
 		$shortcode->register();
 
-		( new JobsBubblesShortcode( $this->service, $this->assetManager ) )->register();
+		$hoscoRepo   = new HoscoJobRepository(
+			new HoscoApiClient(
+				(string) get_option( 'hosco_base_url', 'https://api-e.hosco.com' ),
+				(string) get_option( 'hosco_api_secret', '' )
+			),
+			(int) get_option( 'hospitaliti_jobs_cache_duration', 30 )
+		);
+		$hoscoMapper = new HoscoJobMapper();
+
+		( new JobsBubblesShortcode( $this->service, $hoscoRepo, $hoscoMapper, $this->assetManager ) )->register();
+		( new HoscoJobsShortcode( $hoscoRepo, $hoscoMapper, $this->assetManager ) )->register();
 
 		( new LoadMoreAjax( $this->service ) )->register();
 
@@ -365,6 +387,54 @@ final class Plugin {
 		} );
 
 		$this->assetManager->enqueueDetailAssets();
+
+		// ── Reset query state so block themes render the standard header ─────
+		// The detail page intercepts a WordPress 404, so $post is null and
+		// $wp_query->is_404 is true.  Block themes (e.g. Twenty Twenty-Five)
+		// use the global $post and queried_object to resolve navigation blocks
+		// and other header components — without a real post they render
+		// differently from every other page on the site.
+		global $wp_query, $post;
+
+		// Use the configured careers page as the post context so the navigation
+		// block highlights the right menu item.  Fall back to the jobs page or
+		// any published page if no careers page is configured.
+		$_context_id = (int) get_option( 'hospitaliti_careers_page_id', 0 );
+		if ( $_context_id <= 0 ) {
+			// Fallback: grab the first published page that is not this virtual URL.
+			$_fallback = get_pages( [ 'number' => 1, 'sort_column' => 'menu_order' ] );
+			$_context_id = ! empty( $_fallback ) ? (int) $_fallback[0]->ID : 0;
+		}
+
+		$_context_post = $_context_id > 0 ? get_post( $_context_id ) : null;
+
+		if ( $_context_post instanceof \WP_Post ) {
+			// Set global $post — required by body_class(), get_the_title(), etc.
+			$post = $_context_post;
+			setup_postdata( $post );
+
+			// Set queried_object so the block template system finds the right
+			// navigation and template for a regular page.
+			$wp_query->queried_object    = $_context_post;
+			$wp_query->queried_object_id = $_context_post->ID;
+			$wp_query->is_page           = true;
+			$wp_query->is_singular       = true;
+		}
+
+		$wp_query->is_404 = false;
+		status_header( 200 );
+
+		// Ensure correct body classes regardless of whether we found a post.
+		add_filter( 'body_class', static function ( array $classes ) use ( $_context_post ): array {
+			$classes = array_diff( $classes, [ 'error404' ] );
+			$classes[] = 'page';
+			$classes[] = 'singular';
+			$classes[] = 'page-template-default';
+			if ( $_context_post instanceof \WP_Post ) {
+				$classes[] = 'page-id-' . $_context_post->ID;
+			}
+			return array_values( $classes );
+		} );
 
 		$theme        = $this->resolveTheme( 'detail' );
 		$api_base_url = get_option( 'hospitaliti_jobs_api_url', HOSPITALITI_JOBS_DEFAULT_API_URL );

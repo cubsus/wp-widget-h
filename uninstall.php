@@ -76,6 +76,14 @@ $options = [
 	'hospitaliti_detail_inherit_theme',
 	'hospitaliti_detail_back_url',
 	'hospitaliti_detail_custom_css',
+
+	// ── Hosco Jobs ─────────────────────────────────────────────────────────────
+	'hosco_base_url',
+	'hosco_api_secret',
+	'hosco_group_id',
+	'hosco_per_page',
+	'hosco_locale',
+	'hosco_enabled',
 ];
 
 foreach ( $options as $option ) {
@@ -90,5 +98,7 @@ global $wpdb;
 $wpdb->query(
 	"DELETE FROM {$wpdb->options}
 	 WHERE option_name LIKE '_transient_hospitaliti_%'
-	    OR option_name LIKE '_transient_timeout_hospitaliti_%'"
+	    OR option_name LIKE '_transient_timeout_hospitaliti_%'
+	    OR option_name LIKE '_transient_hosco_%'
+	    OR option_name LIKE '_transient_timeout_hosco_%'"
 );
