@@ -50,7 +50,7 @@ if ( empty( $org_logo_url ) ) {
 // job detail page ( /{job-slug}/ ) so the visitor stays on the site.
 // Otherwise fall back to the external Hospitaliti platform URL.
 $_careers_page_id  = (int) get_option( 'hospitaliti_careers_page_id', 0 );
-$job_is_external   = ( $_careers_page_id <= 0 );
+$job_is_external   = ( $_careers_page_id <= 0 ) || ! empty( $force_external );
 
 // Trim leading/trailing dashes that the API may produce when the org prefix
 // is empty (e.g. '-job-st-moritz' → 'job-st-moritz').
