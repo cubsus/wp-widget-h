@@ -217,12 +217,13 @@ if ('minimal' === $theme) {
 			<!-- ── Job header ─────────────────────────────────────────────────── -->
 			<header class="hospitaliti-detail-header" <?php echo $reveal; ?> data-hj-delay="1">
 
-				<?php if ($org_name) : ?>
-					<span class="hospitaliti-detail-org" itemprop="hiringOrganization"
-						itemscope itemtype="https://schema.org/Organization">
-						<span itemprop="name"><?php echo esc_html($org_name); ?></span>
-					</span>
-				<?php endif; ?>
+			<?php if ($org_name) : ?>
+				<span class="hospitaliti-detail-org" itemprop="hiringOrganization"
+					itemscope itemtype="https://schema.org/Organization"
+					<?php if ( ! empty( $hj_org_color ) ) : ?>style="--hc-org-color: <?php echo esc_attr( $hj_org_color ); ?>"<?php endif; ?>>
+					<span itemprop="name"><?php echo esc_html($org_name); ?></span>
+				</span>
+			<?php endif; ?>
 
 				<h1 class="hospitaliti-detail-title" itemprop="title">
 					<?php echo esc_html($job->title ?? ''); ?>

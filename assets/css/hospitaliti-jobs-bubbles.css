@@ -209,6 +209,10 @@ body:has(.hj-bubbles-section) {
 	outline-offset: 2px;
 }
 
+.hj-filter-badge.is-active .hj-filter-badge-dot {
+	border: 4px solid #ffffff !important;
+}
+
 /* Coloured dot — one per org badge, matches the bubble colour */
 .hj-filter-badge-dot {
 	display: inline-block;

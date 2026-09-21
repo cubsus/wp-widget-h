@@ -356,6 +356,15 @@ final class Plugin {
 			}
 		}
 
+		// Org colour passed from bubble listing — used for the dot in .hospitaliti-detail-org::before.
+		$hj_org_color = '';
+		if ( ! empty( $_GET['hj_color'] ) ) {
+			$_color_candidate = sanitize_hex_color( rawurldecode( wp_unslash( $_GET['hj_color'] ) ) );
+			if ( $_color_candidate ) {
+				$hj_org_color = $_color_candidate;
+			}
+		}
+
 		// 2. Admin static override.
 		$customBackUrl = esc_url_raw( (string) get_option( 'hospitaliti_detail_back_url', '' ) );
 

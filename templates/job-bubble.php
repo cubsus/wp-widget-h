@@ -39,6 +39,9 @@ if ( ( $job->_source ?? '' ) === 'hosco' ) {
 	if ( ! $_bubble_external && $_bubbles_back ) {
 		$_bubble_url = add_query_arg( 'hj_back', rawurlencode( $_bubbles_back ), $_bubble_url );
 	}
+	if ( ! $_bubble_external ) {
+		$_bubble_url = add_query_arg( 'hj_color', rawurlencode( $_org_colour ), $_bubble_url );
+	}
 }
 
 // ── Inline style — only the background colour ─────────────────────────────────
